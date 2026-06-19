@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Coloso · Supervisión Auditorio Nacional</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --noche:#161019;
+  --noche-2:#1C141F;
+  --terciopelo:#221826;
+  --terciopelo-2:#2C2032;
+  --linea:rgba(244,239,233,.09);
+  --linea-fuerte:rgba(244,239,233,.16);
+  --oro:#E0A23B;
+  --oro-claro:#F2C879;
+  --carmesi:#CE4A44;
+  --carmesi-suave:rgba(206,74,68,.16);
+  --menta:#4FB286;
+  --menta-suave:rgba(79,178,134,.14);
+  --ambar:#E6A23C;
+  --ambar-suave:rgba(230,162,60,.15);
+  --azul:#5B8DCB;
+  --azul-suave:rgba(91,141,203,.16);
+  --marfil:#F4EFE9;
+  --niebla:#A294A8;
+  --niebla-2:#7C6F82;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:'Manrope',system-ui,sans-serif;
+  background:
+    radial-gradient(1200px 600px at 50% -10%, rgba(224,162,59,.10), transparent 60%),
+    radial-gradient(900px 500px at 100% 110%, rgba(206,74,68,.08), transparent 55%),
+    var(--noche);
+  color:var(--marfil);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+.mono{font-family:'Space Mono',monospace}
+.serif{font-family:'Fraunces',serif}
+
+/* ===== Top bar ===== */
+.appbar{
+  position:sticky;top:0;z-index:50;
+  display:flex;align-items:center;gap:16px;
+  padding:14px clamp(16px,4vw,40px);
+  background:rgba(22,16,25,.82);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--linea);
+}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.brand .mark{
+  width:42px;height:42px;border-radius:11px;flex:none;
+  background:linear-gradient(150deg,var(--oro),var(--carmesi));
+  display:grid;place-items:center;
+  box-shadow:0 6px 20px rgba(224,162,59,.22);
+}
+.brand .mark svg{width:24px;height:24px}
+.brand .txt h1{font-family:'Fraunces',serif;font-weight:600;font-size:17px;letter-spacing:.2px;line-height:1}
+.brand .txt p{font-size:11.5px;color:var(--niebla);margin-top:3px;letter-spacing:.3px}
+.spacer{flex:1}
+.toggle{
+  display:flex;padding:4px;border-radius:12px;
+  background:var(--terciopelo);border:1px solid var(--linea);
+}
+.toggle button{
+  display:flex;align-items:center;gap:7px;
+  padding:8px 14px;border-radius:8px;font-size:13px;font-weight:600;color:var(--niebla);
+  transition:.18s;white-space:nowrap;
+}
+.toggle button svg{width:15px;height:15px}
+.toggle button.on{background:linear-gradient(180deg,var(--terciopelo-2),#241926);color:var(--marfil);box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.toggle button.on svg{color:var(--oro)}
+.live{
+  display:flex;align-items:center;gap:7px;font-size:11.5px;font-weight:700;letter-spacing:.6px;
+  color:var(--carmesi);padding:6px 11px;border-radius:20px;background:var(--carmesi-suave);
+}
+.live .dot{width:7px;height:7px;border-radius:50%;background:var(--carmesi);animation:pulse 1.6s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+.stage{padding:clamp(18px,4vw,40px);max-width:1320px;margin:0 auto}
+
+/* ============ PHONE APP ============ */
+.app-wrap{display:flex;flex-direction:column;align-items:center;gap:18px}
+.app-hint{font-size:12.5px;color:var(--niebla);text-align:center;max-width:340px;line-height:1.5}
+.phone{
+  width:390px;max-width:96vw;height:820px;max-height:86vh;
+  background:var(--noche-2);border-radius:44px;position:relative;
+  border:1px solid var(--linea-fuerte);
+  box-shadow:0 40px 80px rgba(0,0,0,.5),0 0 0 9px #0c090e,0 0 0 10px #2a2030;
+  overflow:hidden;display:flex;flex-direction:column;
+}
+.notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:130px;height:26px;background:#0c090e;border-radius:0 0 16px 16px;z-index:30}
+.p-head{padding:30px 20px 12px;flex:none}
+.p-time{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--niebla);margin-bottom:14px}
+.p-time .mono{color:var(--marfil);font-weight:700}
+.event-card{
+  background:linear-gradient(135deg,rgba(224,162,59,.16),rgba(206,74,68,.10));
+  border:1px solid var(--linea-fuerte);border-radius:18px;padding:15px 16px;position:relative;overflow:hidden;
+}
+.event-card::after{content:"";position:absolute;right:-30px;top:-30px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(224,162,59,.25),transparent 70%)}
+.event-card .eyebrow{font-size:10.5px;letter-spacing:1.4px;font-weight:700;color:var(--oro);text-transform:uppercase}
+.event-card h2{font-family:'Fraunces',serif;font-weight:600;font-size:21px;margin:5px 0 8px;line-height:1.1}
+.event-meta{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--marfil)}
+.event-meta span{display:flex;align-items:center;gap:5px;color:var(--niebla)}
+.event-meta b{color:var(--marfil);font-weight:700}
+
+.p-body{flex:1;overflow-y:auto;padding:6px 16px 90px;scrollbar-width:thin}
+.p-body::-webkit-scrollbar{width:0}
+.screen{display:none;animation:fade .25s ease}
+.screen.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.section-t{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--niebla-2);font-weight:700;margin:18px 4px 10px;display:flex;align-items:center;justify-content:space-between}
+.section-t a{color:var(--oro);font-size:11px;letter-spacing:.3px;text-transform:none}
+
+.kpi-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kpi{background:var(--terciopelo);border:1px solid var(--linea);border-radius:15px;padding:13px 14px}
+.kpi .lab{font-size:11px;color:var(--niebla);font-weight:600;display:flex;align-items:center;gap:6px}
+.kpi .val{font-family:'Fraunces',serif;font-size:25px;font-weight:600;margin-top:5px;line-height:1}
+.kpi .val small{font-size:13px;color:var(--niebla);font-family:'Manrope';font-weight:600}
+.kpi .bar{height:5px;border-radius:4px;background:var(--linea);margin-top:9px;overflow:hidden}
+.kpi .bar i{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,var(--oro),var(--oro-claro))}
+
+.grid-acc{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.acc-btn{
+  background:var(--terciopelo);border:1px solid var(--linea);border-radius:15px;padding:14px 13px;text-align:left;
+  display:flex;flex-direction:column;gap:9px;transition:.16s;position:relative;
+}
+.acc-btn:hover,.acc-btn:active{border-color:var(--linea-fuerte);background:var(--terciopelo-2);transform:translateY(-1px)}
+.acc-btn .ic{width:38px;height:38px;border-radius:11px;display:grid;place-items:center}
+.acc-btn .ic svg{width:19px;height:19px}
+.acc-btn .nm{font-weight:700;font-size:13.5px}
+.acc-btn .ds{font-size:11px;color:var(--niebla);line-height:1.35}
+.acc-btn .badge{position:absolute;top:11px;right:11px;min-width:19px;height:19px;padding:0 5px;border-radius:10px;background:var(--carmesi);color:#fff;font-size:10.5px;font-weight:700;display:grid;place-items:center}
+.ic.oro{background:var(--ambar-suave);color:var(--oro)}
+.ic.car{background:var(--carmesi-suave);color:var(--carmesi)}
+.ic.men{background:var(--menta-suave);color:var(--menta)}
+.ic.azu{background:var(--azul-suave);color:var(--azul)}
+
+/* alertas */
+.alert{display:flex;gap:11px;align-items:flex-start;padding:12px 13px;border-radius:13px;margin-bottom:9px;border:1px solid var(--linea)}
+.alert.r{background:var(--carmesi-suave);border-color:rgba(206,74,68,.3)}
+.alert.a{background:var(--ambar-suave);border-color:rgba(230,162,60,.28)}
+.alert .ai{width:30px;height:30px;border-radius:9px;flex:none;display:grid;place-items:center}
+.alert.r .ai{background:rgba(206,74,68,.2);color:var(--carmesi)}
+.alert.a .ai{background:rgba(230,162,60,.2);color:var(--ambar)}
+.alert .ai svg{width:16px;height:16px}
+.alert .at{flex:1;min-width:0}
+.alert .at b{font-size:13px;font-weight:700}
+.alert .at p{font-size:11.5px;color:var(--niebla);margin-top:2px;line-height:1.4}
+.alert .at .meta{font-size:10.5px;color:var(--niebla-2);margin-top:4px;display:flex;gap:8px;flex-wrap:wrap}
+
+/* ===== Map ===== */
+.map-card{background:var(--terciopelo);border:1px solid var(--linea);border-radius:18px;padding:14px;margin-top:4px}
+.map-leg{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:8px;font-size:10.5px;color:var(--niebla)}
+.map-leg span{display:flex;align-items:center;gap:5px}
+.map-leg i{width:9px;height:9px;border-radius:3px;display:inline-block}
+svg .zona{cursor:pointer;transition:.18s}
+svg .zona:hover{opacity:.85}
+svg .zona.sel{stroke:var(--oro)!important;stroke-width:2.4px!important}
+.zlabel{font-family:'Manrope';font-size:9.5px;font-weight:700;fill:var(--marfil);pointer-events:none;letter-spacing:.3px}
+.escena{fill:url(#stageGrad);stroke:var(--oro);stroke-width:1.2}
+
+.zona-detail{margin-top:12px;background:var(--terciopelo-2);border:1px solid var(--linea-fuerte);border-radius:15px;padding:14px;display:none}
+.zona-detail.on{display:block;animation:fade .2s}
+.zona-detail h3{font-family:'Fraunces',serif;font-size:18px;font-weight:600;display:flex;align-items:center;justify-content:space-between}
+.zona-detail .est{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px}
+.zd-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px}
+.zd-grid div{background:var(--noche-2);border:1px solid var(--linea);border-radius:11px;padding:9px 8px;text-align:center}
+.zd-grid .n{font-family:'Fraunces',serif;font-size:18px;font-weight:600}
+.zd-grid .l{font-size:9.5px;color:var(--niebla);margin-top:2px}
+
+/* listas */
+.row{display:flex;align-items:center;gap:11px;padding:12px;border-radius:13px;background:var(--terciopelo);border:1px solid var(--linea);margin-bottom:8px}
+.row .av{width:36px;height:36px;border-radius:10px;flex:none;display:grid;place-items:center;font-weight:700;font-size:13px;font-family:'Space Mono'}
+.row .main{flex:1;min-width:0}
+.row .main b{font-size:13.5px;font-weight:700;display:block}
+.row .main p{font-size:11.5px;color:var(--niebla);margin-top:2px}
+.row .tag{font-size:10px;font-weight:700;padding:4px 9px;border-radius:20px;white-space:nowrap}
+.tag.ok{background:var(--menta-suave);color:var(--menta)}
+.tag.warn{background:var(--ambar-suave);color:var(--ambar)}
+.tag.bad{background:var(--carmesi-suave);color:var(--carmesi)}
+.tag.info{background:var(--azul-suave);color:var(--azul)}
+.tag.mut{background:var(--linea);color:var(--niebla)}
+
+.chip-scroll{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin:0 -16px;padding-left:16px;padding-right:16px;scrollbar-width:none}
+.chip-scroll::-webkit-scrollbar{display:none}
+.chip{flex:none;padding:8px 13px;border-radius:20px;background:var(--terciopelo);border:1px solid var(--linea);font-size:12px;font-weight:600;color:var(--niebla);transition:.15s}
+.chip.on{background:var(--oro);color:#1a120a;border-color:var(--oro)}
+
+/* boletaje scan */
+.scanner{background:var(--terciopelo);border:1px solid var(--linea);border-radius:18px;padding:18px;text-align:center}
+.scan-box{width:170px;height:170px;margin:6px auto 14px;border-radius:18px;position:relative;background:var(--noche-2);display:grid;place-items:center;overflow:hidden}
+.scan-box .corner{position:absolute;width:30px;height:30px;border:2.5px solid var(--oro)}
+.scan-box .corner.tl{top:12px;left:12px;border-right:0;border-bottom:0;border-radius:8px 0 0 0}
+.scan-box .corner.tr{top:12px;right:12px;border-left:0;border-bottom:0;border-radius:0 8px 0 0}
+.scan-box .corner.bl{bottom:12px;left:12px;border-right:0;border-top:0;border-radius:0 0 0 8px}
+.scan-box .corner.br{bottom:12px;right:12px;border-left:0;border-top:0;border-radius:0 0 8px 0}
+.scan-line{position:absolute;left:14px;right:14px;height:2px;background:linear-gradient(90deg,transparent,var(--oro),transparent);animation:scan 2.2s ease-in-out infinite}
+@keyframes scan{0%,100%{top:18px}50%{top:150px}}
+.scan-result{display:flex;align-items:center;gap:11px;padding:13px;border-radius:13px;background:var(--menta-suave);border:1px solid rgba(79,178,134,.3);text-align:left;margin-top:4px}
+.scan-result .ri{width:38px;height:38px;border-radius:11px;background:var(--menta);display:grid;place-items:center;flex:none}
+.scan-result .ri svg{width:21px;height:21px;color:#10241a}
+.scan-result b{font-size:14px}
+.scan-result p{font-size:11.5px;color:var(--niebla)}
+
+/* protocolos */
+.proto{border:1px solid var(--linea);border-radius:14px;margin-bottom:9px;overflow:hidden;background:var(--terciopelo)}
+.proto summary{list-style:none;padding:13px 14px;display:flex;align-items:center;gap:11px;cursor:pointer}
+.proto summary::-webkit-details-marker{display:none}
+.proto .pc{width:11px;height:11px;border-radius:50%;flex:none}
+.proto summary b{flex:1;font-size:13.5px}
+.proto summary .ar{color:var(--niebla);transition:.2s}
+.proto[open] summary .ar{transform:rotate(180deg)}
+.proto .pbody{padding:0 14px 14px 36px}
+.proto ol{margin:0;padding-left:18px}
+.proto li{font-size:12.5px;color:var(--marfil);line-height:1.7;padding-left:3px}
+.proto .punto{font-size:11.5px;color:var(--niebla);margin-top:8px;display:flex;align-items:center;gap:6px}
+
+/* bottom tabs */
+.tabbar{
+  position:absolute;bottom:0;left:0;right:0;z-index:25;
+  display:flex;justify-content:space-around;
+  padding:9px 8px 22px;background:rgba(22,16,25,.94);backdrop-filter:blur(16px);
+  border-top:1px solid var(--linea);
+}
+.tabbar button{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10px;font-weight:600;color:var(--niebla-2);flex:1;padding:3px}
+.tabbar button svg{width:21px;height:21px}
+.tabbar button.on{color:var(--oro)}
+.sos{position:absolute;bottom:88px;right:16px;z-index:24;width:54px;height:54px;border-radius:50%;background:linear-gradient(150deg,var(--carmesi),#9c2f2a);display:grid;place-items:center;box-shadow:0 8px 24px rgba(206,74,68,.4);font-weight:800;font-size:12px;color:#fff;letter-spacing:.5px}
+.sos svg{width:22px;height:22px}
+
+/* ============ WEB PLATFORM ============ */
+.web-view{display:none}
+.web-view.on{display:block}
+.web-shell{display:grid;grid-template-columns:230px 1fr;gap:20px}
+.side{background:var(--terciopelo);border:1px solid var(--linea);border-radius:18px;padding:16px 12px;height:fit-content;position:sticky;top:90px}
+.side .grp{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--niebla-2);font-weight:700;padding:10px 10px 6px}
+.side button{display:flex;align-items:center;gap:11px;width:100%;text-align:left;padding:10px 11px;border-radius:11px;font-size:13.5px;font-weight:600;color:var(--niebla);transition:.15s;margin-bottom:2px}
+.side button svg{width:17px;height:17px;flex:none}
+.side button:hover{background:var(--terciopelo-2);color:var(--marfil)}
+.side button.on{background:linear-gradient(180deg,var(--terciopelo-2),rgba(224,162,59,.08));color:var(--marfil)}
+.side button.on svg{color:var(--oro)}
+.side button .cnt{margin-left:auto;font-size:10.5px;font-weight:700;background:var(--carmesi);color:#fff;border-radius:10px;padding:1px 7px}
+
+.main-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:20px;flex-wrap:wrap}
+.main-head h2{font-family:'Fraunces',serif;font-weight:600;font-size:27px;line-height:1.1}
+.main-head .sub{font-size:13px;color:var(--niebla);margin-top:5px}
+.evt-pill{display:flex;align-items:center;gap:10px;background:var(--terciopelo);border:1px solid var(--linea);border-radius:14px;padding:9px 14px}
+.evt-pill .d{font-family:'Fraunces';font-size:18px;font-weight:600}
+.evt-pill .l{font-size:10.5px;color:var(--niebla)}
+
+.webpane{display:none}
+.webpane.on{display:block;animation:fade .25s}
+
+.web-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+.wk{background:var(--terciopelo);border:1px solid var(--linea);border-radius:16px;padding:16px 17px;position:relative;overflow:hidden}
+.wk .ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;margin-bottom:11px}
+.wk .ic svg{width:18px;height:18px}
+.wk .lab{font-size:12px;color:var(--niebla);font-weight:600}
+.wk .val{font-family:'Fraunces',serif;font-size:30px;font-weight:600;margin-top:3px;line-height:1}
+.wk .val small{font-size:14px;color:var(--niebla);font-weight:600;font-family:'Manrope'}
+.wk .trend{font-size:11px;font-weight:700;margin-top:7px;display:flex;align-items:center;gap:5px}
+.wk .trend.up{color:var(--menta)}.wk .trend.dn{color:var(--carmesi)}
+
+.web-grid{display:grid;grid-template-columns:1.35fr 1fr;gap:16px}
+.panel{background:var(--terciopelo);border:1px solid var(--linea);border-radius:18px;padding:18px}
+.panel-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.panel-h h3{font-family:'Fraunces',serif;font-size:17px;font-weight:600}
+.panel-h .mini{font-size:11.5px;color:var(--niebla)}
+
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:10.5px;letter-spacing:.6px;text-transform:uppercase;color:var(--niebla-2);font-weight:700;padding:0 10px 10px;border-bottom:1px solid var(--linea)}
+td{padding:11px 10px;font-size:13px;border-bottom:1px solid var(--linea)}
+tr:last-child td{border-bottom:0}
+td .mono{font-size:12px;color:var(--niebla)}
+.dotz{display:inline-flex;align-items:center;gap:7px}
+.dotz i{width:8px;height:8px;border-radius:50%}
+
+.diversidad{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:4px}
+.dcard{background:var(--noche-2);border:1px solid var(--linea);border-radius:13px;padding:13px}
+.dcard .top{display:flex;align-items:center;gap:9px;margin-bottom:8px}
+.dcard .top .di{width:30px;height:30px;border-radius:9px;display:grid;place-items:center}
+.dcard .top .di svg{width:16px;height:16px}
+.dcard .top b{font-size:12.5px;font-weight:700}
+.dcard .num{font-family:'Fraunces';font-size:22px;font-weight:600}
+.dcard .num small{font-size:12px;color:var(--niebla);font-family:'Manrope'}
+
+.footer-note{text-align:center;font-size:11.5px;color:var(--niebla-2);padding:26px 16px 8px;line-height:1.6}
+
+@media(max-width:920px){
+  .web-shell{grid-template-columns:1fr}
+  .side{position:static;display:flex;flex-wrap:wrap;gap:6px}
+  .side .grp{width:100%}
+  .side button{width:auto}.side button .cnt{margin-left:6px}
+  .web-kpis{grid-template-columns:1fr 1fr}
+  .web-grid{grid-template-columns:1fr}
+}
+@media(max-width:520px){
+  .toggle button span{display:none}
+  .brand .txt p{display:none}
+}
+</style>
+</head>
+<body>
+
+<header class="appbar">
+  <div class="brand">
+    <div class="mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#1a120a" stroke-width="2" stroke-linecap="round"><path d="M3 21V11l9-6 9 6v10"/><path d="M3 21h18M8 21v-5h8v5"/><circle cx="12" cy="13" r="1.4" fill="#1a120a" stroke="none"/></svg>
+    </div>
+    <div class="txt">
+      <h1>Coloso</h1>
+      <p>Supervisión · Auditorio Nacional</p>
+    </div>
+  </div>
+  <div class="spacer"></div>
+  <div class="toggle">
+    <button id="t-app" class="on" onclick="setView('app')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg>
+      <span>App supervisor</span>
+    </button>
+    <button id="t-web" onclick="setView('web')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      <span>Plataforma web</span>
+    </button>
+  </div>
+  <div class="live"><span class="dot"></span>EN VIVO</div>
+</header>
+
+<div class="stage">
+
+<!-- ================= PHONE APP ================= -->
+<div class="app-view" id="appView">
+  <div class="app-wrap">
+    <p class="app-hint">Vista que usaría un supervisor en piso durante la función. Tema oscuro pensado para no emitir luz dentro de la sala. Toca las pestañas y las zonas del mapa.</p>
+    <div class="phone">
+      <div class="notch"></div>
+
+      <div class="p-head">
+        <div class="p-time">
+          <span class="mono">20:18</span>
+          <span>Función en curso · Sala principal</span>
+          <span>🔋 84%</span>
+        </div>
+        <div class="event-card">
+          <div class="eyebrow">Función de hoy</div>
+          <h2 class="serif">Gran Gala Filarmónica</h2>
+          <div class="event-meta">
+            <span><b>20:30</b> inicio</span>
+            <span>Aforo <b>8 200 / 9 683</b></span>
+            <span>Turno <b>Vespertino</b></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-body">
+
+        <!-- INICIO -->
+        <section class="screen on" id="s-inicio">
+          <div class="section-t">Resumen operativo</div>
+          <div class="kpi-row">
+            <div class="kpi">
+              <div class="lab">📊 Ocupación</div>
+              <div class="val">85<small>%</small></div>
+              <div class="bar"><i style="width:85%"></i></div>
+            </div>
+            <div class="kpi">
+              <div class="lab">👥 Personal en piso</div>
+              <div class="val">23<small>/26</small></div>
+              <div class="bar"><i style="width:88%;background:linear-gradient(90deg,var(--menta),#7ed1a8)"></i></div>
+            </div>
+          </div>
+
+          <div class="section-t">Alertas activas <a onclick="goTab('atencion')">Ver todas</a></div>
+          <div class="alert r">
+            <div class="ai"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></div>
+            <div class="at">
+              <b>Conflicto por lugar duplicado</b>
+              <p>Dos boletos validados para la butaca G-114.</p>
+              <div class="meta"><span>📍 Tercer Piso</span><span>⏱ hace 3 min</span><span>🟥 Prioridad alta</span></div>
+            </div>
+          </div>
+          <div class="alert a">
+            <div class="ai"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+            <div class="at">
+              <b>Solicitud de accesibilidad pendiente</b>
+              <p>Usuario en silla de ruedas requiere acompañamiento a Luneta.</p>
+              <div class="meta"><span>📍 Vestíbulo</span><span>⏱ hace 1 min</span></div>
+            </div>
+          </div>
+
+          <div class="section-t">Actividades del supervisor</div>
+          <div class="grid-acc">
+            <button class="acc-btn" onclick="goTab('atencion')">
+              <span class="badge">5</span>
+              <span class="ic oro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
+              <span class="nm">Atención al cliente</span>
+              <span class="ds">Públicos diversos y accesibilidad</span>
+            </button>
+            <button class="acc-btn" onclick="goTab('atencion');setAtTab('conflictos')">
+              <span class="badge">2</span>
+              <span class="ic car"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-6 0v4M5 9h14l1 12H4z"/></svg></span>
+              <span class="nm">Solución de conflictos</span>
+              <span class="ds">Bitácora e intervención</span>
+            </button>
+            <button class="acc-btn" onclick="goTab('boletaje')">
+              <span class="ic men"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z"/><path d="M9 6v12" stroke-dasharray="2 2"/></svg></span>
+              <span class="nm">Boletaje</span>
+              <span class="ds">Validación física y digital</span>
+            </button>
+            <button class="acc-btn" onclick="goTab('zonas')">
+              <span class="ic azu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3 3 5v16l6-2 6 2 6-2V3l-6 2-6-2zM9 3v16M15 5v16"/></svg></span>
+              <span class="nm">Mapa por zona</span>
+              <span class="ds">Conocer todas las zonas</span>
+            </button>
+            <button class="acc-btn" onclick="goTab('personal')">
+              <span class="badge">3</span>
+              <span class="ic men"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+              <span class="nm">Supervisión de personal</span>
+              <span class="ds">Pase de lista por zona</span>
+            </button>
+            <button class="acc-btn" onclick="openProto()">
+              <span class="ic car"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 6v6c0 5 3.4 8.5 8 10 4.6-1.5 8-5 8-10V6z"/></svg></span>
+              <span class="nm">Protocolos de emergencia</span>
+              <span class="ds">Códigos y rutas de evacuación</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- ZONAS -->
+        <section class="screen" id="s-zonas">
+          <div class="section-t">Mapa por zona — Sala principal</div>
+          <div class="map-card">
+            <div id="mapaApp"></div>
+            <div class="map-leg">
+              <span><i style="background:var(--menta)"></i>Normal</span>
+              <span><i style="background:var(--ambar)"></i>Atención</span>
+              <span><i style="background:var(--carmesi)"></i>Alerta</span>
+            </div>
+          </div>
+          <div class="zona-detail" id="zonaDetail"></div>
+          <div class="section-t">Áreas de operación</div>
+          <div class="chip-scroll">
+            <div class="chip on">Vestíbulo</div>
+            <div class="chip">Explanada</div>
+            <div class="chip">Accesos</div>
+            <div class="chip">Palcos</div>
+            <div class="chip">Taquillas</div>
+            <div class="chip">Estacionamiento</div>
+          </div>
+          <div id="zonaList" style="margin-top:14px"></div>
+        </section>
+
+        <!-- ATENCION -->
+        <section class="screen" id="s-atencion">
+          <div class="section-t">Atención al cliente</div>
+          <p style="font-size:12px;color:var(--niebla);line-height:1.5;margin:0 4px 12px">Por la diversidad de quienes ingresan al recinto, registra y canaliza cada solicitud. Acción rápida:</p>
+          <div class="grid-acc">
+            <button class="acc-btn"><span class="ic azu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></span><span class="nm">Adulto mayor</span><span class="ds">Apoyo y traslado</span></button>
+            <button class="acc-btn"><span class="ic men"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="6" r="3"/><path d="M12 9v8M8 13h8M9 21l3-4 3 4"/></svg></span><span class="nm">Silla de ruedas</span><span class="ds">Acceso PCD</span></button>
+            <button class="acc-btn"><span class="ic oro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 9h8M8 13h5"/><path d="M21 12a9 9 0 1 1-4.5-7.8L21 3v9z"/></svg></span><span class="nm">Lengua de Señas</span><span class="ds">Intérprete LSM</span></button>
+            <button class="acc-btn"><span class="ic oro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18 14 14 0 0 1 0-18"/></svg></span><span class="nm">Idiomas / Turista</span><span class="ds">Inglés y guía</span></button>
+            <button class="acc-btn"><span class="ic car"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M5 21v-1a5 5 0 0 1 5-5h.5"/><circle cx="17" cy="17" r="4"/></svg></span><span class="nm">Menor extraviado</span><span class="ds">Protocolo niños</span></button>
+            <button class="acc-btn"><span class="ic men"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span><span class="nm">Objeto perdido</span><span class="ds">Lost & found</span></button>
+          </div>
+
+          <div class="section-t" style="margin-top:20px">
+            <span id="atTitle">Casos abiertos</span>
+          </div>
+          <div class="chip-scroll" style="margin-bottom:12px">
+            <div class="chip on" id="cm-casos" onclick="setAtTab('casos')">Casos · 5</div>
+            <div class="chip" id="cm-conflictos" onclick="setAtTab('conflictos')">Conflictos · 2</div>
+            <div class="chip" id="cm-acc" onclick="setAtTab('acc')">Accesibilidad</div>
+          </div>
+          <div id="atList"></div>
+        </section>
+
+        <!-- BOLETAJE -->
+        <section class="screen" id="s-boletaje">
+          <div class="section-t">Boletaje — Validación</div>
+          <div class="scanner">
+            <div class="scan-box">
+              <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+              <div class="scan-line"></div>
+              <svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="var(--niebla-2)" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M21 14v.01M21 21v-3M17 21h.01"/></svg>
+            </div>
+            <div class="scan-result">
+              <div class="ri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></div>
+              <div>
+                <b>Boleto válido</b>
+                <p class="mono">AUD-2F-1147 · Primer Piso, fila F</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="kpi-row" style="margin-top:14px">
+            <div class="kpi"><div class="lab">🎟 Validados</div><div class="val">8 153</div><div class="bar"><i style="width:84%"></i></div></div>
+            <div class="kpi"><div class="lab">⚠ Alertas</div><div class="val" style="color:var(--carmesi)">7</div><div class="bar"><i style="width:14%;background:var(--carmesi)"></i></div></div>
+          </div>
+
+          <div class="section-t">Por tipo de acceso</div>
+          <div class="row"><div class="av" style="background:var(--azul-suave);color:var(--azul)">📱</div><div class="main"><b>Digital (QR / wallet)</b><p>5 940 validados · 72.9%</p></div><div class="tag info">Activo</div></div>
+          <div class="row"><div class="av" style="background:var(--ambar-suave);color:var(--oro)">🎫</div><div class="main"><b>Físico (impreso)</b><p>2 213 validados · 27.1%</p></div><div class="tag ok">Activo</div></div>
+          <div class="row"><div class="av" style="background:var(--carmesi-suave);color:var(--carmesi)">✖</div><div class="main"><b>Rechazados / duplicados</b><p>7 incidencias en revisión</p></div><div class="tag bad">Revisar</div></div>
+        </section>
+
+        <!-- PERSONAL -->
+        <section class="screen" id="s-personal">
+          <div class="section-t">Supervisión de personal propio</div>
+          <div class="kpi-row">
+            <div class="kpi"><div class="lab">✅ En piso</div><div class="val" style="color:var(--menta)">23</div></div>
+            <div class="kpi"><div class="lab">⚠ Sin ubicar</div><div class="val" style="color:var(--carmesi)">3</div></div>
+          </div>
+          <div class="chip-scroll" style="margin-top:14px">
+            <div class="chip on">Todas las zonas</div>
+            <div class="chip">Luneta</div>
+            <div class="chip">Primer Piso</div>
+            <div class="chip">Segundo Piso</div>
+            <div class="chip">Tercer Piso</div>
+            <div class="chip">Galería</div>
+          </div>
+          <div id="staffList" style="margin-top:14px"></div>
+        </section>
+
+      </div><!-- /p-body -->
+
+      <button class="sos" onclick="openProto()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 2 4 6v6c0 5 3.4 8.5 8 10 4.6-1.5 8-5 8-10V6z"/></svg>
+      </button>
+
+      <nav class="tabbar">
+        <button class="on" id="tab-inicio" onclick="goTab('inicio')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></svg>Inicio
+        </button>
+        <button id="tab-zonas" onclick="goTab('zonas')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3 3 5v16l6-2 6 2 6-2V3l-6 2-6-2zM9 3v16M15 5v16"/></svg>Zonas
+        </button>
+        <button id="tab-atencion" onclick="goTab('atencion')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Atención
+        </button>
+        <button id="tab-boletaje" onclick="goTab('boletaje')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z"/></svg>Boletaje
+        </button>
+        <button id="tab-personal" onclick="goTab('personal')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8"/></svg>Personal
+        </button>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<!-- ================= WEB PLATFORM ================= -->
+<div class="web-view" id="webView">
+  <div class="web-shell">
+    <aside class="side">
+      <div class="grp">Operación en vivo</div>
+      <button class="on" id="w-resumen" onclick="goWeb('resumen')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>Resumen</button>
+      <button id="w-mapa" onclick="goWeb('mapa')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3 3 5v16l6-2 6 2 6-2V3l-6 2-6-2zM9 3v16M15 5v16"/></svg>Mapa por zona</button>
+      <div class="grp">Actividades del supervisor</div>
+      <button id="w-atencion" onclick="goWeb('atencion')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Atención al cliente<span class="cnt">5</span></button>
+      <button id="w-conflictos" onclick="goWeb('conflictos')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-6 0v4M5 9h14l1 12H4z"/></svg>Conflictos<span class="cnt">2</span></button>
+      <button id="w-boletaje" onclick="goWeb('boletaje')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z"/></svg>Boletaje</button>
+      <button id="w-personal" onclick="goWeb('personal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8"/></svg>Personal</button>
+      <button id="w-protocolos" onclick="goWeb('protocolos')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 6v6c0 5 3.4 8.5 8 10 4.6-1.5 8-5 8-10V6z"/></svg>Protocolos</button>
+    </aside>
+
+    <main>
+      <!-- RESUMEN -->
+      <section class="webpane on" id="p-resumen">
+        <div class="main-head">
+          <div>
+            <h2 class="serif">Centro de operaciones</h2>
+            <p class="sub">Gran Gala Filarmónica · turno vespertino · 26 colaboradores asignados</p>
+          </div>
+          <div class="evt-pill"><div><div class="d serif">85%</div><div class="l">aforo</div></div></div>
+        </div>
+
+        <div class="web-kpis">
+          <div class="wk"><div class="ic oro" style="background:var(--ambar-suave)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--oro)" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8"/></svg></div><div class="lab">Asistencia</div><div class="val">8 200<small> /9 683</small></div><div class="trend up">▲ Ingreso fluido</div></div>
+          <div class="wk"><div class="ic men" style="background:var(--menta-suave)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--menta)" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div class="lab">Atención al cliente</div><div class="val">5<small> abiertos</small></div><div class="trend up">▲ 18 resueltos hoy</div></div>
+          <div class="wk"><div class="ic car" style="background:var(--carmesi-suave)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--carmesi)" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-6 0v4M5 9h14l1 12H4z"/></svg></div><div class="lab">Conflictos</div><div class="val">2<small> activos</small></div><div class="trend dn">▼ 1 prioridad alta</div></div>
+          <div class="wk"><div class="ic azu" style="background:var(--azul-suave)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--azul)" stroke-width="2"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z"/></svg></div><div class="lab">Boletos validados</div><div class="val">8 153</div><div class="trend up">▲ 7 alertas</div></div>
+        </div>
+
+        <div class="web-grid">
+          <div class="panel">
+            <div class="panel-h"><h3>Mapa por zona</h3><span class="mini">Toca una zona para ver el detalle</span></div>
+            <div id="mapaWeb"></div>
+            <div class="map-leg" style="margin-top:12px"><span><i style="background:var(--menta)"></i>Normal</span><span><i style="background:var(--ambar)"></i>Atención</span><span><i style="background:var(--carmesi)"></i>Alerta</span></div>
+            <div class="zona-detail" id="zonaDetailWeb"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-h"><h3>Actividad reciente</h3><span class="mini">en vivo</span></div>
+            <div id="webFeed"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- MAPA -->
+      <section class="webpane" id="p-mapa">
+        <div class="main-head"><div><h2 class="serif">Mapa por zona</h2><p class="sub">Conocer todas las zonas · estado, aforo y personal asignado</p></div></div>
+        <div class="web-grid">
+          <div class="panel">
+            <div id="mapaWeb2"></div>
+            <div class="map-leg" style="margin-top:12px"><span><i style="background:var(--menta)"></i>Normal</span><span><i style="background:var(--ambar)"></i>Atención</span><span><i style="background:var(--carmesi)"></i>Alerta</span></div>
+          </div>
+          <div class="panel">
+            <div class="panel-h"><h3>Estado por zona</h3></div>
+            <table><thead><tr><th>Zona</th><th>Aforo</th><th>Personal</th><th>Estado</th></tr></thead><tbody id="zonaTable"></tbody></table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ATENCION -->
+      <section class="webpane" id="p-atencion">
+        <div class="main-head"><div><h2 class="serif">Atención al cliente</h2><p class="sub">Enfoque en la diversidad de públicos que ingresan al recinto</p></div></div>
+        <div class="web-grid">
+          <div class="panel">
+            <div class="panel-h"><h3>Casos abiertos</h3><span class="mini">5 activos · 18 resueltos</span></div>
+            <table><thead><tr><th>Folio</th><th>Tipo</th><th>Zona</th><th>Estado</th></tr></thead><tbody id="casosTable"></tbody></table>
+          </div>
+          <div class="panel">
+            <div class="panel-h"><h3>Solicitudes por perfil</h3><span class="mini">hoy</span></div>
+            <div class="diversidad">
+              <div class="dcard"><div class="top"><div class="di" style="background:var(--menta-suave);color:var(--menta)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="6" r="3"/><path d="M12 9v8M8 13h8"/></svg></div><b>Silla de ruedas / PCD</b></div><div class="num">14<small> apoyos</small></div></div>
+              <div class="dcard"><div class="top"><div class="di" style="background:var(--azul-suave);color:var(--azul)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/></svg></div><b>Adultos mayores</b></div><div class="num">22<small> traslados</small></div></div>
+              <div class="dcard"><div class="top"><div class="di" style="background:var(--ambar-suave);color:var(--oro)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 9h8M8 13h5M21 12a9 9 0 1 1-9-9"/></svg></div><b>Intérprete LSM</b></div><div class="num">3<small> sesiones</small></div></div>
+              <div class="dcard"><div class="top"><div class="di" style="background:var(--carmesi-suave);color:var(--carmesi)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/></svg></div><b>Turistas / idiomas</b></div><div class="num">9<small> guías</small></div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CONFLICTOS -->
+      <section class="webpane" id="p-conflictos">
+        <div class="main-head"><div><h2 class="serif">Solución de conflictos</h2><p class="sub">Bitácora de incidencias e intervención del supervisor</p></div></div>
+        <div class="panel">
+          <table><thead><tr><th>Folio</th><th>Tipo</th><th>Zona</th><th>Hora</th><th>Prioridad</th><th>Estado</th></tr></thead><tbody id="confTable"></tbody></table>
+        </div>
+      </section>
+
+      <!-- BOLETAJE -->
+      <section class="webpane" id="p-boletaje">
+        <div class="main-head"><div><h2 class="serif">Boletaje</h2><p class="sub">Validación física y/o digital en accesos</p></div></div>
+        <div class="web-kpis">
+          <div class="wk"><div class="lab">Total validados</div><div class="val">8 153</div><div class="trend up">▲ 84% del aforo</div></div>
+          <div class="wk"><div class="lab">Digital (QR)</div><div class="val">5 940</div><div class="trend up">72.9%</div></div>
+          <div class="wk"><div class="lab">Físico (impreso)</div><div class="val">2 213</div><div class="trend up">27.1%</div></div>
+          <div class="wk"><div class="lab">Alertas / duplicados</div><div class="val" style="color:var(--carmesi)">7</div><div class="trend dn">en revisión</div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-h"><h3>Accesos en operación</h3></div>
+          <table><thead><tr><th>Acceso</th><th>Tipo</th><th>Validados</th><th>Estado</th></tr></thead><tbody id="accesoTable"></tbody></table>
+        </div>
+      </section>
+
+      <!-- PERSONAL -->
+      <section class="webpane" id="p-personal">
+        <div class="main-head"><div><h2 class="serif">Supervisión del personal propio</h2><p class="sub">Pase de lista, ubicación y estatus por zona</p></div></div>
+        <div class="panel">
+          <table><thead><tr><th>Colaborador</th><th>Rol</th><th>Zona</th><th>Estado</th></tr></thead><tbody id="staffTable"></tbody></table>
+        </div>
+      </section>
+
+      <!-- PROTOCOLOS -->
+      <section class="webpane" id="p-protocolos">
+        <div class="main-head"><div><h2 class="serif">Protocolos de emergencia</h2><p class="sub">Códigos, rutas de evacuación y puntos de reunión</p></div></div>
+        <div class="web-grid">
+          <div class="panel" id="protoPanel"></div>
+          <div class="panel">
+            <div class="panel-h"><h3>Puntos de reunión</h3></div>
+            <div class="row"><div class="av" style="background:var(--menta-suave);color:var(--menta)">A</div><div class="main"><b>Explanada principal</b><p>Salida poniente · capacidad amplia</p></div><div class="tag ok">Despejado</div></div>
+            <div class="row"><div class="av" style="background:var(--menta-suave);color:var(--menta)">B</div><div class="main"><b>Jardín / acceso norte</b><p>Salida lateral norte</p></div><div class="tag ok">Despejado</div></div>
+            <div class="row"><div class="av" style="background:var(--ambar-suave);color:var(--oro)">C</div><div class="main"><b>Estacionamiento sur</b><p>Punto secundario</p></div><div class="tag warn">Flujo lento</div></div>
+            <div style="margin-top:14px;padding:13px;border-radius:13px;background:var(--carmesi-suave);border:1px solid rgba(206,74,68,.3);font-size:12.5px;line-height:1.6;color:var(--marfil)">
+              <b style="color:var(--carmesi)">⚠ Recordatorio</b><br>El supervisor mantiene comunicación por radio en todo momento y prioriza el apoyo a personas con movilidad reducida, adultos mayores y menores durante cualquier evacuación.
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<p class="footer-note">Simulación de producto · App de supervisor y plataforma web para el Auditorio Nacional de México.<br>Datos de muestra con fines de demostración.</p>
+
+</div><!-- /stage -->
+
+<script>
+/* ---------- DATOS ---------- */
+var ZONAS = [
+  {id:'luneta', nombre:'Luneta',        cap:2200, ocup:1980, estado:'atencion', personal:6, inc:1, r0:62,  r1:118},
+  {id:'p1',     nombre:'Primer Piso',   cap:2100, ocup:1870, estado:'ok',       personal:5, inc:0, r0:118, r1:162},
+  {id:'p2',     nombre:'Segundo Piso',  cap:2000, ocup:1600, estado:'ok',       personal:5, inc:0, r0:162, r1:202},
+  {id:'p3',     nombre:'Tercer Piso',   cap:1900, ocup:1490, estado:'alerta',   personal:4, inc:2, r0:202, r1:240},
+  {id:'galeria',nombre:'Galería',       cap:1483, ocup:900,  estado:'ok',       personal:3, inc:0, r0:240, r1:276}
+];
+var STAFF = [
+  {n:'M. Reséndiz', rol:'Supervisor', z:'Luneta',       e:'piso'},
+  {n:'J. Carranza', rol:'Acomodador', z:'Luneta',       e:'piso'},
+  {n:'A. Bautista', rol:'Acomodador', z:'Primer Piso',  e:'piso'},
+  {n:'L. Quiroz',   rol:'Supervisor', z:'Segundo Piso', e:'piso'},
+  {n:'R. Mendoza',  rol:'Acomodador', z:'Segundo Piso', e:'descanso'},
+  {n:'P. Ávila',    rol:'Acomodador', z:'Tercer Piso',  e:'sinubicar'},
+  {n:'S. Delgado',  rol:'Acomodador', z:'Tercer Piso',  e:'piso'},
+  {n:'C. Núñez',    rol:'Atención',   z:'Vestíbulo',    e:'piso'},
+  {n:'D. Fuentes',  rol:'Acomodador', z:'Galería',      e:'sinubicar'},
+  {n:'V. Ortega',   rol:'Atención',   z:'Accesos',      e:'piso'}
+];
+var CASOS = [
+  {f:'AT-218', t:'Silla de ruedas · acceso a Luneta', z:'Vestíbulo', e:'curso', tag:'warn'},
+  {f:'AT-217', t:'Adulto mayor · apoyo a butaca',     z:'Primer Piso', e:'curso', tag:'warn'},
+  {f:'AT-216', t:'Intérprete LSM solicitado',         z:'Taquillas', e:'asignado', tag:'info'},
+  {f:'AT-215', t:'Turista · información en inglés',    z:'Explanada', e:'curso', tag:'info'},
+  {f:'AT-214', t:'Objeto perdido · bolso',            z:'Galería',   e:'abierto', tag:'mut'}
+];
+var CONFLICTOS = [
+  {f:'CF-044', t:'Boleto duplicado · butaca G-114', z:'Tercer Piso', h:'20:15', p:'Alta', tag:'bad', e:'En sitio'},
+  {f:'CF-043', t:'Desacuerdo por reacomodo',        z:'Luneta',      h:'19:58', p:'Media', tag:'warn', e:'Mediación'}
+];
+var ACCESOS = [
+  {a:'Acceso A · Reforma', t:'Digital + físico', v:'2 880', tag:'ok',  e:'Operando'},
+  {a:'Acceso B · Norte',   t:'Digital',          v:'2 410', tag:'ok',  e:'Operando'},
+  {a:'Acceso C · Sur',     t:'Físico',           v:'1 920', tag:'warn',e:'Fila moderada'},
+  {a:'Palcos · VIP',       t:'Digital',          v:'943',   tag:'info',e:'Operando'}
+];
+var FEED = [
+  {t:'Boleto duplicado reportado en Tercer Piso', m:'hace 3 min', c:'car'},
+  {t:'Apoyo a silla de ruedas solicitado en Vestíbulo', m:'hace 4 min', c:'oro'},
+  {t:'P. Ávila sin ubicar — Tercer Piso', m:'hace 6 min', c:'car'},
+  {t:'Intérprete LSM asignado en Taquillas', m:'hace 9 min', c:'men'},
+  {t:'Acceso C: fila moderada, refuerzo enviado', m:'hace 12 min', c:'oro'},
+  {t:'Turista atendido en inglés · Explanada', m:'hace 15 min', c:'men'}
+];
+var PROTOCOLOS = [
+  {c:'#CE4A44', n:'Código Rojo · Incendio', pasos:['Activar alarma y avisar por radio al centro de control.','No usar elevadores; dirigir al público a las salidas más cercanas.','Acomodar la evacuación por zonas, empezando por las más próximas al foco.','Confirmar despeje de butacas y reportar zona libre.'], punto:'Punto de reunión A — Explanada'},
+  {c:'#5B8DCB', n:'Código Azul · Emergencia médica', pasos:['Solicitar servicio médico por radio indicando zona y fila.','Despejar el área alrededor de la persona.','Acompañar a paramédicos hasta la ubicación exacta.','Registrar la incidencia en bitácora.'], punto:'Enfermería · planta baja'},
+  {c:'#E6A23C', n:'Código Amarillo · Evacuación parcial', pasos:['Identificar la zona afectada y delimitarla.','Reubicar al público de esa zona a un área segura.','Mantener informado al resto de la sala con calma.','Esperar indicación del centro de control para reanudar.'], punto:'Punto de reunión B — Acceso norte'},
+  {c:'#4FB286', n:'Sismo', pasos:['Mantener la calma y pedir al público no correr.','Alejar a las personas de cristales y estructuras colgantes.','Al terminar el movimiento, iniciar evacuación ordenada por rutas.','Priorizar apoyo a PCD, adultos mayores y menores.'], punto:'Explanada y jardines exteriores'}
+];
+
+/* ---------- MAPA SVG ---------- */
+var COL = {ok:'#4FB286', atencion:'#E6A23C', alerta:'#CE4A44'};
+function polar(cx,cy,r,deg){var a=deg*Math.PI/180;return [cx+r*Math.cos(a), cy+r*Math.sin(a)];}
+function arcBand(cx,cy,r0,r1,a0,a1){
+  var p1=polar(cx,cy,r0,a0),p2=polar(cx,cy,r1,a0),p3=polar(cx,cy,r1,a1),p4=polar(cx,cy,r0,a1);
+  return 'M'+p1[0].toFixed(1)+' '+p1[1].toFixed(1)+
+         ' L'+p2[0].toFixed(1)+' '+p2[1].toFixed(1)+
+         ' A'+r1+' '+r1+' 0 0 1 '+p3[0].toFixed(1)+' '+p3[1].toFixed(1)+
+         ' L'+p4[0].toFixed(1)+' '+p4[1].toFixed(1)+
+         ' A'+r0+' '+r0+' 0 0 0 '+p1[0].toFixed(1)+' '+p1[1].toFixed(1)+' Z';
+}
+function buildMap(selId, target){
+  var cx=200, cy=34, a0=33, a1=147;
+  var svg='<svg viewBox="0 0 400 312" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block">';
+  svg+='<defs><radialGradient id="stageGrad" cx="50%" cy="0%" r="100%"><stop offset="0%" stop-color="#F2C879"/><stop offset="100%" stop-color="#E0A23B"/></radialGradient></defs>';
+  // escenario
+  svg+='<path class="escena" d="'+arcBand(cx,cy,24,52,a0+6,a1-6)+'"/>';
+  var mid=(a0+a1)/2;var sp=polar(cx,cy,40,mid);
+  svg+='<text x="'+cx+'" y="'+(sp[1]+3)+'" text-anchor="middle" class="zlabel" style="fill:#1a120a">ESCENARIO</text>';
+  ZONAS.forEach(function(z){
+    var col=COL[z.estado];
+    svg+='<path class="zona" data-z="'+z.id+'" data-t="'+target+'" d="'+arcBand(cx,cy,z.r0,z.r1,a0,a1)+'" '+
+         'fill="'+col+'" fill-opacity="0.30" stroke="'+col+'" stroke-width="1.3"/>';
+    var rm=(z.r0+z.r1)/2; var lp=polar(cx,cy,rm,mid);
+    svg+='<text x="'+lp[0]+'" y="'+(lp[1]+3)+'" text-anchor="middle" class="zlabel">'+z.nombre.toUpperCase()+'</text>';
+  });
+  svg+='</svg>';
+  document.getElementById(selId).innerHTML=svg;
+  document.querySelectorAll('#'+selId+' .zona').forEach(function(el){
+    el.addEventListener('click',function(){selectZona(el.getAttribute('data-z'), el.getAttribute('data-t'));});
+  });
+}
+function selectZona(id, target){
+  var z=ZONAS.find(function(x){return x.id===id;});
+  var pct=Math.round(z.ocup/z.cap*100);
+  var estTxt={ok:'Normal',atencion:'Requiere atención',alerta:'Alerta activa'}[z.estado];
+  var estCol={ok:'var(--menta-suave);color:var(--menta)',atencion:'var(--ambar-suave);color:var(--ambar)',alerta:'var(--carmesi-suave);color:var(--carmesi)'}[z.estado];
+  var html='<h3 class="serif">'+z.nombre+'<span class="est" style="background:'+estCol+'">'+estTxt+'</span></h3>'+
+    '<div class="zd-grid">'+
+      '<div><div class="n">'+pct+'%</div><div class="l">ocupación</div></div>'+
+      '<div><div class="n">'+z.personal+'</div><div class="l">en piso</div></div>'+
+      '<div><div class="n" style="'+(z.inc>0?'color:var(--carmesi)':'')+'">'+z.inc+'</div><div class="l">incidencias</div></div>'+
+    '</div>'+
+    '<p style="font-size:11.5px;color:var(--niebla);margin-top:11px;line-height:1.5">'+z.ocup.toLocaleString('es-MX')+' de '+z.cap.toLocaleString('es-MX')+' lugares ocupados.</p>';
+  var boxes = target==='web' ? ['zonaDetailWeb'] : ['zonaDetail'];
+  boxes.forEach(function(b){var el=document.getElementById(b);if(el){el.innerHTML=html;el.classList.add('on');}});
+  document.querySelectorAll('.zona').forEach(function(e){e.classList.remove('sel');});
+  document.querySelectorAll('.zona[data-z="'+id+'"]').forEach(function(e){e.classList.add('sel');});
+}
+
+/* ---------- RENDER LISTAS ---------- */
+function estStaff(e){return {piso:['En piso','ok'],descanso:['Descanso','mut'],sinubicar:['Sin ubicar','bad']}[e];}
+function renderStaff(targetId){
+  var h='';
+  STAFF.forEach(function(s){
+    var st=estStaff(s.e);var ini=s.n.split(' ').map(function(p){return p[0];}).join('').slice(0,2);
+    h+='<div class="row"><div class="av" style="background:var(--terciopelo-2)">'+ini+'</div>'+
+       '<div class="main"><b>'+s.n+'</b><p>'+s.rol+' · '+s.z+'</p></div>'+
+       '<div class="tag '+st[1]+'">'+st[0]+'</div></div>';
+  });
+  document.getElementById(targetId).innerHTML=h;
+}
+function staffTableHTML(){
+  var h='';
+  STAFF.forEach(function(s){
+    var st=estStaff(s.e);
+    h+='<tr><td><b>'+s.n+'</b></td><td><span class="mono">'+s.rol+'</span></td><td>'+s.z+'</td><td><span class="tag '+st[1]+'">'+st[0]+'</span></td></tr>';
+  });
+  return h;
+}
+function renderAt(tab){
+  var h='';
+  if(tab==='casos'){
+    CASOS.forEach(function(c){h+='<div class="row"><div class="av" style="background:var(--ambar-suave);color:var(--oro)">'+c.f.split('-')[1].slice(-2)+'</div><div class="main"><b>'+c.t+'</b><p class="mono">'+c.f+' · '+c.z+'</p></div><div class="tag '+c.tag+'">'+({curso:'En curso',asignado:'Asignado',abierto:'Abierto'}[c.e])+'</div></div>';});
+    document.getElementById('atTitle').textContent='Casos abiertos';
+  } else if(tab==='conflictos'){
+    CONFLICTOS.forEach(function(c){h+='<div class="row"><div class="av" style="background:var(--carmesi-suave);color:var(--carmesi)">'+c.f.split('-')[1]+'</div><div class="main"><b>'+c.t+'</b><p class="mono">'+c.f+' · '+c.z+' · '+c.h+'</p></div><div class="tag '+c.tag+'">'+c.p+'</div></div>';});
+    document.getElementById('atTitle').textContent='Conflictos a resolver';
+  } else {
+    var accs=[['Silla de ruedas / PCD',14,'men'],['Adultos mayores',22,'azu'],['Intérprete LSM',3,'oro'],['Turistas / idiomas',9,'oro'],['Menores acompañados',5,'car']];
+    accs.forEach(function(a){h+='<div class="row"><div class="av" style="background:var(--'+({men:'menta',azu:'azul',oro:'ambar',car:'carmesi'}[a[2]])+'-suave)">♿</div><div class="main"><b>'+a[0]+'</b><p>Solicitudes atendidas hoy</p></div><div class="tag info">'+a[1]+'</div></div>';});
+    document.getElementById('atTitle').textContent='Accesibilidad e inclusión';
+  }
+  document.getElementById('atList').innerHTML=h;
+  ['casos','conflictos','acc'].forEach(function(t){var el=document.getElementById('cm-'+t);if(el)el.classList.toggle('on',t===tab);});
+}
+function setAtTab(t){renderAt(t);}
+
+/* ---------- WEB tablas ---------- */
+function fillWebTables(){
+  var zt='';ZONAS.forEach(function(z){var pct=Math.round(z.ocup/z.cap*100);zt+='<tr><td><b>'+z.nombre+'</b></td><td>'+pct+'%</td><td>'+z.personal+'</td><td><span class="dotz"><i style="background:'+COL[z.estado]+'"></i>'+({ok:'Normal',atencion:'Atención',alerta:'Alerta'}[z.estado])+'</span></td></tr>';});
+  setHTML('zonaTable',zt);
+  var ct='';CASOS.forEach(function(c){ct+='<tr><td class="mono">'+c.f+'</td><td>'+c.t+'</td><td>'+c.z+'</td><td><span class="tag '+c.tag+'">'+({curso:'En curso',asignado:'Asignado',abierto:'Abierto'}[c.e])+'</span></td></tr>';});
+  setHTML('casosTable',ct);
+  var cf='';CONFLICTOS.forEach(function(c){cf+='<tr><td class="mono">'+c.f+'</td><td>'+c.t+'</td><td>'+c.z+'</td><td class="mono">'+c.h+'</td><td><span class="tag '+c.tag+'">'+c.p+'</span></td><td>'+c.e+'</td></tr>';});
+  setHTML('confTable',cf);
+  var ac='';ACCESOS.forEach(function(a){ac+='<tr><td><b>'+a.a+'</b></td><td class="mono">'+a.t+'</td><td>'+a.v+'</td><td><span class="tag '+a.tag+'">'+a.e+'</span></td></tr>';});
+  setHTML('accesoTable',ac);
+  setHTML('staffTable',staffTableHTML());
+  var fd='';FEED.forEach(function(f){fd+='<div class="row" style="background:var(--noche-2)"><div class="av ic '+f.c+'" style="background:var(--'+({car:'carmesi',oro:'ambar',men:'menta'}[f.c])+'-suave)">•</div><div class="main"><b style="font-weight:600;font-size:13px">'+f.t+'</b><p>'+f.m+'</p></div></div>';});
+  setHTML('webFeed',fd);
+  var pp='';PROTOCOLOS.forEach(function(p,i){pp+='<details class="proto" '+(i===0?'open':'')+'><summary><span class="pc" style="background:'+p.c+'"></span><b>'+p.n+'</b><span class="ar">▾</span></summary><div class="pbody"><ol>'+p.pasos.map(function(s){return '<li>'+s+'</li>';}).join('')+'</ol><div class="punto">📍 '+p.punto+'</div></div></details>';});
+  setHTML('protoPanel','<div class="panel-h"><h3>Códigos de emergencia</h3></div>'+pp);
+}
+function setHTML(id,h){var el=document.getElementById(id);if(el)el.innerHTML=h;}
+
+/* ---------- NAVEGACIÓN ---------- */
+function setView(v){
+  document.getElementById('appView').style.display = v==='app'?'block':'none';
+  document.getElementById('webView').classList.toggle('on', v==='web');
+  document.getElementById('t-app').classList.toggle('on', v==='app');
+  document.getElementById('t-web').classList.toggle('on', v==='web');
+}
+function goTab(t){
+  ['inicio','zonas','atencion','boletaje','personal'].forEach(function(s){
+    var sc=document.getElementById('s-'+s);if(sc)sc.classList.toggle('on',s===t);
+    var tb=document.getElementById('tab-'+s);if(tb)tb.classList.toggle('on',s===t);
+  });
+  document.querySelector('.p-body').scrollTop=0;
+}
+function goWeb(p){
+  ['resumen','mapa','atencion','conflictos','boletaje','personal','protocolos'].forEach(function(s){
+    var pn=document.getElementById('p-'+s);if(pn)pn.classList.toggle('on',s===p);
+    var b=document.getElementById('w-'+s);if(b)b.classList.toggle('on',s===p);
+  });
+  if(p==='mapa')buildMap('mapaWeb2','web');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function openProto(){setView('web');goWeb('protocolos');}
+
+/* ---------- INIT ---------- */
+buildMap('mapaApp','app');
+buildMap('mapaWeb','web');
+renderStaff('staffList');
+renderAt('casos');
+fillWebTables();
+</script>
+</body>
+</html>
