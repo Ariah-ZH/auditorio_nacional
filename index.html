@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Coloso · Supervisión Auditorio Nacional</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --noche:#161019;--noche-2:#1C141F;--terciopelo:#221826;--terciopelo-2:#2C2032;
+  --linea:rgba(244,239,233,.09);--linea-fuerte:rgba(244,239,233,.16);
+  --oro:#E0A23B;--oro-claro:#F2C879;--carmesi:#CE4A44;--carmesi-suave:rgba(206,74,68,.16);
+  --menta:#4FB286;--menta-suave:rgba(79,178,134,.14);--ambar:#E6A23C;--ambar-suave:rgba(230,162,60,.15);
+  --azul:#5B8DCB;--azul-suave:rgba(91,141,203,.16);--marfil:#F4EFE9;--niebla:#A294A8;--niebla-2:#7C6F82;
+  /* roles */
+  --r-acom:#CE4A44;--r-seg:#C2C8D2;--r-dob:#5FB87A;--r-bol:#E08A3B;--r-pbi:#5B8DCB;--r-del:#9A8C3D;--r-med:#46C2A8;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Manrope',system-ui,sans-serif;background:radial-gradient(1200px 600px at 50% -10%,rgba(224,162,59,.10),transparent 60%),radial-gradient(900px 500px at 100% 110%,rgba(206,74,68,.08),transparent 55%),var(--noche);color:var(--marfil);min-height:100vh;-webkit-font-smoothing:antialiased}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+.mono{font-family:'Space Mono',monospace}.serif{font-family:'Fraunces',serif}
+
+.appbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:16px;padding:14px clamp(16px,4vw,40px);background:rgba(22,16,25,.82);backdrop-filter:blur(18px);border-bottom:1px solid var(--linea)}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.brand .mark{width:42px;height:42px;border-radius:11px;flex:none;background:linear-gradient(150deg,var(--oro),var(--carmesi));display:grid;place-items:center;box-shadow:0 6px 20px rgba(224,162,59,.22)}
+.brand .mark svg{width:24px;height:24px}
+.brand .txt h1{font-family:'Fraunces',serif;font-weight:600;font-size:17px;line-height:1}
+.brand .txt p{font-size:11.5px;color:var(--niebla);margin-top:3px}
+.spacer{flex:1}
+.toggle{display:flex;padding:4px;border-radius:12px;background:var(--terciopelo);border:1px solid var(--linea)}
+.toggle button{display:flex;align-items:center;gap:7px;padding:8px 14px;border-radius:8px;font-size:13px;font-weight:600;color:var(--niebla);transition:.18s;white-space:nowrap}
+.toggle button svg{width:15px;height:15px}
+.toggle button.on{background:linear-gradient(180deg,var(--terciopelo-2),#241926);color:var(--marfil);box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.toggle button.on svg{color:var(--oro)}
+.live{display:flex;align-items:center;gap:7px;font-size:11.5px;font-weight:700;letter-spacing:.6px;color:var(--carmesi);padding:6px 11px;border-radius:20px;background:var(--carmesi-suave);white-space:nowrap;flex:none}
+.live .dot{width:7px;height:7px;border-radius:50%;background:var(--carmesi);animation:pulse 1.6s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.stage{padding:clamp(18px,4vw,40px);max-width:1320px;margin:0 auto}
+
+/* PHONE */
+.app-wrap{display:flex;flex-direction:column;align-items:center;gap:18px}
+.app-hint{font-size:12.5px;color:var(--niebla);text-align:center;max-width:360px;line-height:1.5}
+.phone{width:390px;max-width:96vw;background:var(--noche-2);border-radius:44px;position:relative;border:1px solid var(--linea-fuerte);box-shadow:0 40px 80px rgba(0,0,0,.5),0 0 0 9px #0c090e,0 0 0 10px #2a2030;display:flex;flex-direction:column;margin:0 auto 30px}
+.notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:130px;height:26px;background:#0c090e;border-radius:0 0 16px 16px;z-index:30}
+.p-head{padding:30px 20px 12px;flex:none}
+.p-time{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--niebla);margin-bottom:14px}
+.p-time .mono{color:var(--marfil);font-weight:700}
+.event-card{background:linear-gradient(135deg,rgba(224,162,59,.16),rgba(206,74,68,.10));border:1px solid var(--linea-fuerte);border-radius:18px;padding:15px 16px;position:relative;overflow:hidden}
+.event-card::after{content:"";position:absolute;right:-30px;top:-30px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(224,162,59,.25),transparent 70%)}
+.event-card .eyebrow{font-size:10.5px;letter-spacing:1.4px;font-weight:700;color:var(--oro);text-transform:uppercase}
+.event-card h2{font-family:'Fraunces',serif;font-weight:600;font-size:21px;margin:5px 0 8px;line-height:1.1}
+.event-meta{display:flex;gap:14px;flex-wrap:wrap;font-size:12px}
+.event-meta span{color:var(--niebla)}.event-meta b{color:var(--marfil);font-weight:700}
+.p-body{padding:6px 16px 84px;scrollbar-width:none}
+.p-body::-webkit-scrollbar{width:0}
+.screen{display:none;animation:fade .25s ease}.screen.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.section-t{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--niebla-2);font-weight:700;margin:18px 4px 10px;display:flex;align-items:center;justify-content:space-between}
+.section-t a{color:var(--oro);font-size:11px;text-transform:none}
+.kpi-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kpi{background:var(--terciopelo);border:1px solid var(--linea);border-radius:15px;padding:13px 14px}
+.kpi .lab{font-size:11px;color:var(--niebla);font-weight:600}
+.kpi .val{font-family:'Fraunces',serif;font-size:25px;font-weight:600;margin-top:5px;line-height:1}
+.kpi .val small{font-size:13px;color:var(--niebla);font-family:'Manrope';font-weight:600}
+.kpi .bar{height:5px;border-radius:4px;background:var(--linea);margin-top:9px;overflow:hidden}
+.kpi .bar i{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,var(--oro),var(--oro-claro))}
+.grid-acc{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.acc-btn{background:var(--terciopelo);border:1px solid var(--linea);border-radius:15px;padding:14px 13px;text-align:left;display:flex;flex-direction:column;gap:9px;transition:.16s;position:relative}
+.acc-btn:hover,.acc-btn:active{border-color:var(--linea-fuerte);background:var(--terciopelo-2);transform:translateY(-1px)}
+.acc-btn .ic{width:38px;height:38px;border-radius:11px;display:grid;place-items:center}
+.acc-btn .ic svg{width:19px;height:19px}
+.acc-btn .nm{font-weight:700;font-size:13.5px}
+.acc-btn .ds{font-size:11px;color:var(--niebla);line-height:1.35}
+.acc-btn .badge{position:absolute;top:11px;right:11px;min-width:19px;height:19px;padding:0 5px;border-radius:10px;background:var(--carmesi);color:#fff;font-size:10.5px;font-weight:700;display:grid;place-items:center}
+.ic.oro{background:var(--ambar-suave);color:var(--oro)}.ic.car{background:var(--carmesi-suave);color:var(--carmesi)}
+.ic.men{background:var(--menta-suave);color:var(--menta)}.ic.azu{background:var(--azul-suave);color:var(--azul)}
+.alert{display:flex;gap:11px;align-items:flex-start;padding:12px 13px;border-radius:13px;margin-bottom:9px;border:1px solid var(--linea)}
+.alert.r{background:var(--carmesi-suave);border-color:rgba(206,74,68,.3)}.alert.a{background:var(--ambar-suave);border-color:rgba(230,162,60,.28)}
+.alert .ai{width:30px;height:30px;border-radius:9px;flex:none;display:grid;place-items:center}
+.alert.r .ai{background:rgba(206,74,68,.2);color:var(--carmesi)}.alert.a .ai{background:rgba(230,162,60,.2);color:var(--ambar)}
+.alert .ai svg{width:16px;height:16px}.alert .at{flex:1;min-width:0}
+.alert .at b{font-size:13px;font-weight:700}.alert .at p{font-size:11.5px;color:var(--niebla);margin-top:2px;line-height:1.4}
+.alert .at .meta{font-size:10.5px;color:var(--niebla-2);margin-top:4px;display:flex;gap:8px;flex-wrap:wrap}
+
+.map-card{background:var(--terciopelo);border:1px solid var(--linea);border-radius:18px;padding:12px}
+.map-leg{display:flex;gap:13px;flex-wrap:wrap;justify-content:center;margin-top:8px;font-size:10.5px;color:var(--niebla)}
+.map-leg span{display:flex;align-items:center;gap:5px}
+.map-leg i{width:9px;height:9px;border-radius:3px;display:inline-block}
+svg .zona{cursor:pointer;transition:.18s}svg .zona:hover{opacity:.85}
+svg .zona.sel{stroke:var(--oro)!important;stroke-width:2.6px!important}
+.pdot{transition:cx .9s ease,cy .9s ease}
+.pdot.hidden{display:none}
+.zona-detail{margin-top:12px;background:var(--terciopelo-2);border:1px solid var(--linea-fuerte);border-radius:15px;padding:14px;display:none}
+.zona-detail.on{display:block;animation:fade .2s}
+.zona-detail h3{font-family:'Fraunces',serif;font-size:18px;font-weight:600;display:flex;align-items:center;justify-content:space-between}
+.zona-detail .est{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px}
+.zd-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px}
+.zd-grid div{background:var(--noche-2);border:1px solid var(--linea);border-radius:11px;padding:9px 8px;text-align:center}
+.zd-grid .n{font-family:'Fraunces',serif;font-size:18px;font-weight:600}.zd-grid .l{font-size:9.5px;color:var(--niebla);margin-top:2px}
+
+.row{display:flex;align-items:center;gap:11px;padding:12px;border-radius:13px;background:var(--terciopelo);border:1px solid var(--linea);margin-bottom:8px}
+.row .av{width:36px;height:36px;border-radius:10px;flex:none;display:grid;place-items:center;font-weight:700;font-size:12px;font-family:'Space Mono'}
+.row .main{flex:1;min-width:0}.row .main b{font-size:13.5px;font-weight:700;display:block}.row .main p{font-size:11.5px;color:var(--niebla);margin-top:2px}
+.row .tag{font-size:10px;font-weight:700;padding:4px 9px;border-radius:20px;white-space:nowrap}
+.tag.ok{background:var(--menta-suave);color:var(--menta)}.tag.warn{background:var(--ambar-suave);color:var(--ambar)}
+.tag.bad{background:var(--carmesi-suave);color:var(--carmesi)}.tag.info{background:var(--azul-suave);color:var(--azul)}.tag.mut{background:var(--linea);color:var(--niebla)}
+.chip-scroll{display:flex;gap:8px;overflow-x:auto;padding:0 16px 4px;margin:0 -16px;scrollbar-width:none}
+.chip-scroll::-webkit-scrollbar{display:none}
+.chip{flex:none;padding:8px 13px;border-radius:20px;background:var(--terciopelo);border:1px solid var(--linea);font-size:12px;font-weight:600;color:var(--niebla);transition:.15s;display:flex;align-items:center;gap:6px}
+.chip i{width:8px;height:8px;border-radius:50%}
+.chip.on{background:var(--oro);color:#1a120a;border-color:var(--oro)}
+.chip.on i{box-shadow:0 0 0 2px rgba(0,0,0,.15)}
+
+.segctl{display:flex;background:var(--terciopelo);border:1px solid var(--linea);border-radius:12px;padding:4px;margin-bottom:12px}
+.segctl button{flex:1;padding:9px;border-radius:8px;font-size:12.5px;font-weight:700;color:var(--niebla);transition:.15s}
+.segctl button.on{background:var(--terciopelo-2);color:var(--marfil);box-shadow:0 2px 6px rgba(0,0,0,.25)}
+.segctl button.on span{color:var(--oro)}
+
+/* biometric scanner */
+.bio{background:var(--terciopelo);border:1px solid var(--linea);border-radius:18px;padding:20px;text-align:center}
+.fp{width:120px;height:120px;margin:4px auto 12px;border-radius:50%;display:grid;place-items:center;position:relative;background:radial-gradient(circle,rgba(224,162,59,.18),transparent 70%)}
+.fp svg{width:62px;height:62px;color:var(--oro);position:relative;z-index:2}
+.fp .ring{position:absolute;inset:0;border-radius:50%;border:2px solid var(--oro);opacity:0;animation:ring 2.2s infinite}
+.fp .ring:nth-child(2){animation-delay:.7s}
+@keyframes ring{0%{transform:scale(.7);opacity:.7}100%{transform:scale(1.15);opacity:0}}
+.bio h3{font-family:'Fraunces';font-size:17px;font-weight:600;margin-bottom:3px}
+.bio p{font-size:12px;color:var(--niebla)}
+.bio-res{display:flex;align-items:center;gap:11px;padding:13px;border-radius:13px;background:var(--menta-suave);border:1px solid rgba(79,178,134,.3);text-align:left;margin-top:16px}
+.bio-res .ri{width:38px;height:38px;border-radius:11px;background:var(--menta);display:grid;place-items:center;flex:none}
+.bio-res .ri svg{width:21px;height:21px;color:#10241a}
+.bio-res b{font-size:13.5px}.bio-res p{font-size:11.5px;color:var(--niebla)}
+
+.proto{border:1px solid var(--linea);border-radius:14px;margin-bottom:9px;overflow:hidden;background:var(--terciopelo)}
+.proto summary{list-style:none;padding:13px 14px;display:flex;align-items:center;gap:11px;cursor:pointer}
+.proto summary::-webkit-details-marker{display:none}
+.proto .pc{width:11px;height:11px;border-radius:50%;flex:none}
+.proto summary b{flex:1;font-size:13.5px}.proto summary .ar{color:var(--niebla);transition:.2s}
+.proto[open] summary .ar{transform:rotate(180deg)}
+.proto .pbody{padding:0 14px 14px 36px}.proto ol{margin:0;padding-left:18px}
+.proto li{font-size:12.5px;line-height:1.7;padding-left:3px}.proto .punto{font-size:11.5px;color:var(--niebla);margin-top:8px}
+
+.tabbar{position:sticky;bottom:0;z-index:25;display:flex;justify-content:space-around;padding:9px 8px 18px;background:rgba(22,16,25,.96);backdrop-filter:blur(16px);border-top:1px solid var(--linea);border-radius:0 0 44px 44px}
+.tabbar button{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10px;font-weight:600;color:var(--niebla-2);flex:1;padding:3px}
+.tabbar button svg{width:21px;height:21px}.tabbar button.on{color:var(--oro)}
+.sos{position:fixed;bottom:82px;right:max(16px,calc(50vw - 188px));z-index:40;width:54px;height:54px;border-radius:50%;background:linear-gradient(150deg,var(--carmesi),#9c2f2a);display:grid;place-items:center;box-shadow:0 8px 24px rgba(206,74,68,.4)}
+.sos svg{width:22px;height:22px}
+
+/* WEB */
+.web-view{display:none}.web-view.on{display:block}
+.web-shell{display:grid;grid-template-columns:236px 1fr;gap:20px}
+.side{background:var(--terciopelo);border:1px solid var(--linea);border-radius:18px;padding:16px 12px;height:fit-content;position:sticky;top:90px}
+.side .grp{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--niebla-2);font-weight:700;padding:10px 10px 6px}
+.side button{display:flex;align-items:center;gap:11px;width:100%;text-align:left;padding:10px 11px;border-radius:11px;font-size:13.5px;font-weight:600;color:var(--niebla);transition:.15s;margin-bottom:2px}
+.side button svg{width:17px;height:17px;flex:none}
+.side button:hover{background:var(--terciopelo-2);color:var(--marfil)}
+.side button.on{background:linear-gradient(180deg,var(--terciopelo-2),rgba(224,162,59,.08));color:var(--marfil)}
+.side button.on svg{color:var(--oro)}
+.side button .cnt{margin-left:auto;font-size:10.5px;font-weight:700;background:var(--carmesi);color:#fff;border-radius:10px;padding:1px 7px}
+.side button.on .cnt.live{background:var(--menta)}
+.main-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:20px;flex-wrap:wrap}
+.main-head h2{font-family:'Fraunces',serif;font-weight:600;font-size:27px;line-height:1.1}
+.main-head .sub{font-size:13px;color:var(--niebla);margin-top:5px}
+.evt-pill{display:flex;align-items:center;gap:14px;background:var(--terciopelo);border:1px solid var(--linea);border-radius:14px;padding:9px 16px}
+.evt-pill .d{font-family:'Fraunces';font-size:18px;font-weight:600}.evt-pill .l{font-size:10.5px;color:var(--niebla)}
+.webpane{display:none}.webpane.on{display:block;animation:fade .25s}
+.web-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+.wk{background:var(--terciopelo);border:1px solid var(--linea);border-radius:16px;padding:16px 17px}
+.wk .ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;margin-bottom:11px}
+.wk .ic svg{width:18px;height:18px}
+.wk .lab{font-size:12px;color:var(--niebla);font-weight:600}
+.wk .val{font-family:'Fraunces',serif;font-size:30px;font-weight:600;margin-top:3px;line-height:1}
+.wk .val small{font-size:14px;color:var(--niebla);font-weight:600;font-family:'Manrope'}
+.wk .trend{font-size:11px;font-weight:700;margin-top:7px}.wk .trend.up{color:var(--menta)}.wk .trend.dn{color:var(--carmesi)}
+.web-grid{display:grid;grid-template-columns:1.35fr 1fr;gap:16px}
+.web-grid.live{grid-template-columns:1.5fr 1fr}
+.panel{background:var(--terciopelo);border:1px solid var(--linea);border-radius:18px;padding:18px}
+.panel-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.panel-h h3{font-family:'Fraunces',serif;font-size:17px;font-weight:600}.panel-h .mini{font-size:11.5px;color:var(--niebla)}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:10.5px;letter-spacing:.6px;text-transform:uppercase;color:var(--niebla-2);font-weight:700;padding:0 10px 10px;border-bottom:1px solid var(--linea)}
+td{padding:11px 10px;font-size:13px;border-bottom:1px solid var(--linea)}
+tr:last-child td{border-bottom:0}td .mono{font-size:12px;color:var(--niebla)}
+.dotz{display:inline-flex;align-items:center;gap:7px}.dotz i{width:8px;height:8px;border-radius:50%}
+.diversidad{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.dcard{background:var(--noche-2);border:1px solid var(--linea);border-radius:13px;padding:13px}
+.dcard .top{display:flex;align-items:center;gap:9px;margin-bottom:8px}
+.dcard .top .di{width:30px;height:30px;border-radius:9px;display:grid;place-items:center}.dcard .top .di svg{width:16px;height:16px}
+.dcard .top b{font-size:12.5px;font-weight:700}.dcard .num{font-family:'Fraunces';font-size:22px;font-weight:600}.dcard .num small{font-size:12px;color:var(--niebla);font-family:'Manrope'}
+.roster{display:flex;flex-direction:column;gap:7px}
+.rrow{display:flex;align-items:center;gap:10px;padding:8px 4px;border-bottom:1px solid var(--linea)}
+.rrow:last-child{border-bottom:0}
+.rrow .rd{width:11px;height:11px;border-radius:50%;flex:none}
+.rrow .rn{flex:1;font-size:13px;font-weight:600}
+.rrow .rc{font-family:'Fraunces';font-size:16px;font-weight:600}
+.rrow .rb{width:90px;height:6px;border-radius:4px;background:var(--linea);overflow:hidden}
+.rrow .rb i{display:block;height:100%;border-radius:4px}
+.footer-note{text-align:center;font-size:11.5px;color:var(--niebla-2);padding:26px 16px 8px;line-height:1.6}
+
+/* EMPLEADO */
+.emp-card{display:flex;align-items:center;gap:13px;background:linear-gradient(135deg,rgba(224,162,59,.14),rgba(206,74,68,.08));border:1px solid var(--linea-fuerte);border-radius:18px;padding:14px}
+.emp-photo{width:52px;height:52px;border-radius:14px;flex:none;background:linear-gradient(150deg,var(--oro),var(--carmesi));display:grid;place-items:center;font-family:'Space Mono';font-weight:700;font-size:17px;color:#1a120a}
+.emp-id{min-width:0}.emp-id .eyebrow{font-size:10px;letter-spacing:1.2px;font-weight:700;color:var(--oro);text-transform:uppercase}
+.emp-id h2{font-family:'Fraunces';font-weight:600;font-size:19px;line-height:1.1;margin:2px 0 4px}
+.emp-status{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--niebla)}
+.ok-dot{width:7px;height:7px;border-radius:50%;background:var(--menta)}
+.role-switch{display:flex;gap:6px;overflow-x:auto;margin-top:12px;scrollbar-width:none}.role-switch::-webkit-scrollbar{display:none}
+.role-switch button{flex:none;padding:6px 11px;border-radius:18px;background:var(--terciopelo);border:1px solid var(--linea);font-size:11.5px;font-weight:600;color:var(--niebla);transition:.15s}
+.role-switch button.on{background:var(--marfil);color:#1a120a;border-color:var(--marfil)}
+.puesto-card{background:var(--terciopelo);border:1px solid var(--linea);border-radius:16px;padding:6px 14px;margin-top:4px}
+.pk{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--linea)}.pk:last-child{border-bottom:0}
+.pk .pl{font-size:11.5px;color:var(--niebla)}.pk .pz{font-family:'Fraunces';font-size:16px;font-weight:600;color:var(--oro)}.pk .pv{font-size:13px;font-weight:600}
+.task{display:flex;align-items:center;gap:11px;padding:12px;border-radius:13px;background:var(--terciopelo);border:1px solid var(--linea);margin-bottom:8px;cursor:pointer;transition:.15s}
+.task .box{width:22px;height:22px;border-radius:7px;border:2px solid var(--niebla-2);flex:none;display:grid;place-items:center;transition:.15s}
+.task .box svg{width:13px;height:13px;color:#1a120a;opacity:0}
+.task.done .box{background:var(--menta);border-color:var(--menta)}.task.done .box svg{opacity:1}
+.task span{font-size:13px;font-weight:600}.task.done span{color:var(--niebla);text-decoration:line-through}
+.btn-out{width:100%;margin-top:14px;padding:12px;border-radius:12px;background:var(--terciopelo-2);border:1px solid var(--linea-fuerte);font-size:13px;font-weight:700;color:var(--marfil)}
+.priv-note{display:flex;align-items:flex-start;gap:9px;margin-top:12px;padding:11px 13px;border-radius:12px;background:var(--azul-suave);border:1px solid rgba(91,141,203,.25);font-size:11.5px;line-height:1.45;color:var(--marfil)}
+.priv-note svg{width:16px;height:16px;color:var(--azul);flex:none;margin-top:1px}
+.puesto-tag{text-align:center;margin-top:10px;font-size:12.5px;font-weight:700;color:var(--oro)}
+.rep-text{width:100%;min-height:84px;border-radius:13px;background:var(--terciopelo);border:1px solid var(--linea);padding:12px;color:var(--marfil);font-family:inherit;font-size:13px;resize:vertical}
+.rep-text:focus{outline:none;border-color:var(--oro)}
+.btn-send{width:100%;margin-top:10px;padding:13px;border-radius:13px;background:linear-gradient(135deg,var(--oro),var(--oro-claro));color:#1a120a;font-size:14px;font-weight:700}
+.btn-panic{width:100%;margin-top:9px;padding:13px;border-radius:13px;background:linear-gradient(135deg,var(--carmesi),#9c2f2a);color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-panic svg{width:18px;height:18px}
+.perfil-top{text-align:center;padding:10px 0 4px}
+.perfil-photo{width:78px;height:78px;border-radius:22px;margin:0 auto 12px;background:linear-gradient(150deg,var(--oro),var(--carmesi));display:grid;place-items:center;font-family:'Space Mono';font-weight:700;font-size:26px;color:#1a120a}
+.perfil-top h2{font-family:'Fraunces';font-weight:600;font-size:21px}.perfil-top p{font-size:12.5px;color:var(--niebla);margin-top:3px}
+.perfil-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}
+.perfil-grid div{background:var(--terciopelo);border:1px solid var(--linea);border-radius:13px;padding:11px 12px}
+.perfil-grid .l{font-size:10.5px;color:var(--niebla)}.perfil-grid .v{font-size:13px;font-weight:700;margin-top:3px}
+.perms .perm{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:12px;background:var(--terciopelo);border:1px solid var(--linea);margin-bottom:7px;font-size:12.5px;font-weight:600}
+.perms .perm .pi{width:24px;height:24px;border-radius:7px;flex:none;display:grid;place-items:center}
+.perms .perm.yes .pi{background:var(--menta-suave);color:var(--menta)}.perms .perm.no .pi{background:var(--carmesi-suave);color:var(--carmesi)}
+.perms .perm.no{color:var(--niebla)}.perms .perm .pi svg{width:14px;height:14px}
+/* EVENTOS */
+.ev-filtros{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.ev-filtros button{padding:8px 14px;border-radius:20px;background:var(--terciopelo);border:1px solid var(--linea);font-size:12.5px;font-weight:600;color:var(--niebla);transition:.15s}
+.ev-filtros button.on{background:var(--marfil);color:#1a120a;border-color:var(--marfil)}
+.ev-month{margin-bottom:26px}
+.ev-month-h{display:flex;align-items:baseline;gap:10px;margin-bottom:13px}
+.ev-month-h h3{font-family:'Fraunces',serif;font-size:20px;font-weight:600}
+.ev-month-h span{font-size:12px;color:var(--niebla-2)}
+.ev-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.ev-card{background:var(--terciopelo);border:1px solid var(--linea);border-radius:16px;padding:15px 16px;transition:.16s;display:flex;flex-direction:column;gap:12px}
+.ev-card.hoy{border-color:rgba(224,162,59,.45);background:linear-gradient(135deg,rgba(224,162,59,.10),var(--terciopelo))}
+.ev-card.pasado{opacity:.82}
+.ev-top{display:flex;align-items:flex-start;gap:13px}
+.ev-date{flex:none;width:50px;text-align:center;background:var(--noche-2);border:1px solid var(--linea);border-radius:11px;padding:7px 0}
+.ev-date .d{font-family:'Fraunces';font-size:20px;font-weight:600;line-height:1}.ev-date .m{font-size:10px;color:var(--niebla);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+.ev-info{flex:1;min-width:0}
+.ev-info h4{font-family:'Fraunces';font-size:16px;font-weight:600;line-height:1.15}
+.ev-info .tipo{font-size:11.5px;color:var(--niebla);margin-top:3px}
+.ev-badge{font-size:10px;font-weight:700;padding:4px 9px;border-radius:20px;white-space:nowrap;flex:none;text-transform:uppercase;letter-spacing:.4px}
+.ev-badge.pasado{background:var(--linea);color:var(--niebla)}
+.ev-badge.hoy{background:var(--ambar-suave);color:var(--oro)}
+.ev-badge.proximo{background:var(--azul-suave);color:var(--azul)}
+.ev-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;border-top:1px solid var(--linea);padding-top:12px}
+.ev-stats div{text-align:center}
+.ev-stats .n{font-family:'Fraunces';font-size:17px;font-weight:600;line-height:1}
+.ev-stats .l{font-size:9.5px;color:var(--niebla);margin-top:3px;line-height:1.2}
+@media(max-width:600px){.ev-grid{grid-template-columns:1fr}}
+@media(max-width:920px){.web-shell{grid-template-columns:1fr}.side{position:static;display:flex;flex-wrap:wrap;gap:6px}.side .grp{width:100%}.side button{width:auto}.side button .cnt{margin-left:6px}.web-kpis{grid-template-columns:1fr 1fr}.web-grid,.web-grid.live{grid-template-columns:1fr}}
+@media(max-width:520px){.toggle button span{display:none}.brand .txt p{display:none}}
+@media(max-width:600px){
+  .appbar{gap:10px;padding:10px 14px}
+  .stage{padding:0}
+  #webView{padding:14px 14px 48px}
+  .app-view .app-wrap{gap:0}
+  .app-hint{display:none}
+  .phone{width:100%;max-width:100%;border-radius:0;border:none;box-shadow:none;margin:0}
+  .notch{display:none}
+  .p-head{padding-top:14px}
+  .tabbar{border-radius:0;padding-bottom:max(16px,env(safe-area-inset-bottom))}
+  .sos{right:16px;bottom:82px}
+  body{-webkit-text-size-adjust:100%}
+}
+</style>
+</head>
+<body>
+
+<header class="appbar">
+  <div class="brand">
+    <div class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="#1a120a" stroke-width="2" stroke-linecap="round"><path d="M3 21V11l9-6 9 6v10"/><path d="M3 21h18M8 21v-5h8v5"/></svg></div>
+    <div class="txt"><h1>Coloso</h1><p>Supervisión · Auditorio Nacional</p></div>
+  </div>
+  <div class="spacer"></div>
+  <div class="toggle">
+    <button id="t-empleado" onclick="setRole('empleado')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M5 21v-1a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v1"/></svg><span>Empleado</span></button>
+    <button id="t-supervisor" class="on" onclick="setRole('supervisor')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg><span>Supervisor</span></button>
+    <button id="t-mando" onclick="setRole('mando')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg><span>Mando · Web</span></button>
+  </div>
+  <div class="live"><span class="dot"></span>EN VIVO</div>
+</header>
+
+<div class="stage">
+
+<!-- ============ PHONE ============ -->
+<div class="app-view" id="appView">
+ <div class="app-wrap">
+  <p class="app-hint" id="appHint">App del supervisor en piso. Ve solo su zona y su equipo. Tema oscuro para no emitir luz en la sala.</p>
+  <div class="phone">
+   <div class="notch"></div>
+   <div id="phoneSup">
+   <div class="p-head">
+     <div class="p-time"><span class="mono">20:18</span><span>Función en curso</span><span>🔋 84%</span></div>
+     <div class="event-card">
+       <div class="eyebrow">Función de hoy</div>
+       <h2 class="serif">Gran Gala Filarmónica</h2>
+       <div class="event-meta"><span>Inicio <b>20:30</b></span><span>Operativo <b>71 personas</b></span><span>Asistencia <b>68/71</b></span></div>
+     </div>
+   </div>
+
+   <div class="p-body">
+
+     <!-- INICIO -->
+     <section class="screen on" id="s-inicio">
+       <div class="section-t">Resumen operativo</div>
+       <div class="kpi-row">
+         <div class="kpi"><div class="lab">🟢 Personal en sitio</div><div class="val">60<small>/71</small></div><div class="bar"><i style="width:85%;background:linear-gradient(90deg,var(--menta),#7ed1a8)"></i></div></div>
+         <div class="kpi"><div class="lab">✅ Asistencia</div><div class="val">68<small>/71</small></div><div class="bar"><i style="width:96%;background:linear-gradient(90deg,var(--menta),#7ed1a8)"></i></div></div>
+       </div>
+
+       <div class="section-t">Alertas activas <a onclick="goTab('atencion')">Ver todas</a></div>
+       <div class="alert r"><div class="ai"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></div><div class="at"><b>Conflicto por lugar duplicado</b><p>Dos boletos para la butaca G-114 (Segundo Piso).</p><div class="meta"><span>📍 Segundo Piso</span><span>⏱ hace 3 min</span><span>🟥 Alta</span></div></div></div>
+       <div class="alert a"><div class="ai"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><div class="at"><b>Acceso PCD pendiente</b><p>Usuario en silla de ruedas en Acceso 1er Piso requiere acompañamiento.</p><div class="meta"><span>📍 Explanada</span><span>⏱ hace 1 min</span></div></div></div>
+
+       <div class="section-t">Actividades del supervisor</div>
+       <div class="grid-acc">
+         <button class="acc-btn" onclick="goTab('atencion')"><span class="badge">5</span><span class="ic oro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span><span class="nm">Atención al cliente</span><span class="ds">Públicos diversos y accesibilidad</span></button>
+         <button class="acc-btn" onclick="goTab('atencion');setAtTab('conflictos')"><span class="badge">2</span><span class="ic car"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-6 0v4M5 9h14l1 12H4z"/></svg></span><span class="nm">Solución de conflictos</span><span class="ds">Bitácora e intervención</span></button>
+         <button class="acc-btn" onclick="goTab('asistencia')"><span class="ic men"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M6 21v-2a4 4 0 0 1 4-4h0M16 16l2 2 4-4"/></svg></span><span class="nm">Asistencia biométrica</span><span class="ds">Registro de entrada del personal</span></button>
+         <button class="acc-btn" onclick="goTab('mapa');setMapMode('live')"><span class="ic men"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5 8 12 8 12s8-7 8-12a8 8 0 0 0-8-8Z"/></svg></span><span class="nm">Personal en vivo</span><span class="ds">Ubicación en tiempo real</span></button>
+         <button class="acc-btn" onclick="goTab('mapa');setMapMode('zonas')"><span class="ic azu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3 3 5v16l6-2 6 2 6-2V3l-6 2-6-2zM9 3v16M15 5v16"/></svg></span><span class="nm">Mapa por zona</span><span class="ds">Conocer todas las zonas</span></button>
+         <button class="acc-btn" onclick="openProto()"><span class="ic car"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 6v6c0 5 3.4 8.5 8 10 4.6-1.5 8-5 8-10V6z"/></svg></span><span class="nm">Protocolos de emergencia</span><span class="ds">Códigos y rutas</span></button>
+       </div>
+     </section>
+
+     <!-- MAPA -->
+     <section class="screen" id="s-mapa">
+       <div class="segctl">
+         <button id="mm-zonas" class="on" onclick="setMapMode('zonas')">Estado por zona</button>
+         <button id="mm-live" onclick="setMapMode('live')"><span>●</span> Personal en vivo</button>
+       </div>
+
+       <div id="mapZonasWrap">
+         <div class="map-card"><div id="mapaApp"></div>
+           <div class="map-leg"><span><i style="background:var(--menta)"></i>Normal</span><span><i style="background:var(--ambar)"></i>Atención</span><span><i style="background:var(--carmesi)"></i>Alerta</span></div>
+         </div>
+         <div class="zona-detail" id="zonaDetail"></div>
+         <div class="section-t">Áreas de operación</div>
+         <div class="chip-scroll"><div class="chip on">Explanada</div><div class="chip">Taquilla</div><div class="chip">Cajón Oro</div><div class="chip">Lunario</div><div class="chip">Back Stage</div><div class="chip">Camerinos</div></div>
+       </div>
+
+       <div id="mapLiveWrap" style="display:none">
+         <div class="map-card"><div id="mapaLiveApp"></div></div>
+         <div class="section-t" style="margin-top:14px">Filtrar por tipo · <span id="liveCountApp" style="color:var(--menta);text-transform:none;letter-spacing:0">71 personas</span></div>
+         <div class="chip-scroll" id="liveChipsApp"></div>
+         <div id="liveDetailApp" style="margin-top:14px"></div>
+       </div>
+     </section>
+
+     <!-- ATENCION -->
+     <section class="screen" id="s-atencion">
+       <div class="section-t">Atención al cliente</div>
+       <p style="font-size:12px;color:var(--niebla);line-height:1.5;margin:0 4px 12px">Por la diversidad de quienes ingresan al recinto, registra y canaliza cada solicitud. Acción rápida:</p>
+       <div class="grid-acc">
+         <button class="acc-btn"><span class="ic azu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></span><span class="nm">Adulto mayor</span><span class="ds">Apoyo y traslado</span></button>
+         <button class="acc-btn"><span class="ic men"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="6" r="3"/><path d="M12 9v8M8 13h8M9 21l3-4 3 4"/></svg></span><span class="nm">Silla de ruedas</span><span class="ds">Acceso PCD</span></button>
+         <button class="acc-btn"><span class="ic oro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 9h8M8 13h5"/><path d="M21 12a9 9 0 1 1-4.5-7.8L21 3v9z"/></svg></span><span class="nm">Lengua de Señas</span><span class="ds">Intérprete LSM</span></button>
+         <button class="acc-btn"><span class="ic oro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18 14 14 0 0 1 0-18"/></svg></span><span class="nm">Idiomas / Turista</span><span class="ds">Inglés y guía</span></button>
+         <button class="acc-btn"><span class="ic car"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M5 21v-1a5 5 0 0 1 5-5h.5"/><circle cx="17" cy="17" r="4"/></svg></span><span class="nm">Menor extraviado</span><span class="ds">Protocolo niños</span></button>
+         <button class="acc-btn"><span class="ic men"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span><span class="nm">Objeto perdido</span><span class="ds">Lost &amp; found</span></button>
+       </div>
+       <div class="section-t" style="margin-top:20px"><span id="atTitle">Casos abiertos</span></div>
+       <div class="chip-scroll" style="margin-bottom:12px"><div class="chip on" id="cm-casos" onclick="setAtTab('casos')">Casos · 5</div><div class="chip" id="cm-conflictos" onclick="setAtTab('conflictos')">Conflictos · 2</div><div class="chip" id="cm-acc" onclick="setAtTab('acc')">Accesibilidad</div></div>
+       <div id="atList"></div>
+     </section>
+
+     <!-- ASISTENCIA BIOMETRICA -->
+     <section class="screen" id="s-asistencia">
+       <div class="section-t">Registro de asistencia biométrico</div>
+       <div class="bio">
+         <div class="fp"><span class="ring"></span><span class="ring"></span>
+           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 10a2 2 0 0 1 2 2c0 1.5-.3 3-1 4.5"/><path d="M8.5 6.5A6 6 0 0 1 18 12c0 1-.1 2-.4 3"/><path d="M5.8 9A6 6 0 0 1 6 7"/><path d="M9 13c0 2.5-.5 4.5-1.2 6"/><path d="M12 12v1c0 3-.5 5.2-1.5 7"/><path d="M14.8 18.5c.4-1.3.6-2.6.7-3.9"/></svg>
+         </div>
+         <h3>Acerca tu huella o rostro</h3>
+         <p>Registro de entrada · Turno vespertino</p>
+         <div class="bio-res"><div class="ri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></div><div><b>Entrada registrada</b><p class="mono">C. Núñez · Atención · 18:32 · Huella</p></div></div>
+       </div>
+       <div class="kpi-row" style="margin-top:14px">
+         <div class="kpi"><div class="lab">✅ Registrados</div><div class="val" style="color:var(--menta)">68<small>/71</small></div><div class="bar"><i style="width:96%;background:linear-gradient(90deg,var(--menta),#7ed1a8)"></i></div></div>
+         <div class="kpi"><div class="lab">⏰ Retardos</div><div class="val" style="color:var(--ambar)">2</div></div>
+       </div>
+       <div class="section-t">Registros recientes</div>
+       <div id="checkinList"></div>
+     </section>
+
+     <!-- PERSONAL (roster) -->
+     <section class="screen" id="s-personal">
+       <div class="section-t">Supervisión de personal propio</div>
+       <div class="kpi-row">
+         <div class="kpi"><div class="lab">✅ En sitio</div><div class="val" style="color:var(--menta)">60</div></div>
+         <div class="kpi"><div class="lab">↗ En ruta</div><div class="val" style="color:var(--azul)">8</div></div>
+       </div>
+       <div class="section-t">Por categoría</div>
+       <div id="rosterApp"></div>
+     </section>
+
+   </div>
+
+   <button class="sos" onclick="openProto()"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 2 4 6v6c0 5 3.4 8.5 8 10 4.6-1.5 8-5 8-10V6z"/></svg></button>
+
+   <nav class="tabbar">
+     <button class="on" id="tab-inicio" onclick="goTab('inicio')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></svg>Inicio</button>
+     <button id="tab-mapa" onclick="goTab('mapa')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3 3 5v16l6-2 6 2 6-2V3l-6 2-6-2zM9 3v16M15 5v16"/></svg>Mapa</button>
+     <button id="tab-atencion" onclick="goTab('atencion')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Atención</button>
+     <button id="tab-asistencia" onclick="goTab('asistencia')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M6 21v-2a4 4 0 0 1 4-4M16 16l2 2 4-4"/></svg>Asistencia</button>
+     <button id="tab-personal" onclick="goTab('personal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8"/></svg>Personal</button>
+   </nav>
+   </div><!-- /phoneSup -->
+
+   <!-- ===== APP EMPLEADO ===== -->
+   <div id="phoneEmp" style="display:none">
+     <div class="p-head">
+       <div class="p-time"><span class="mono">20:18</span><span>Mi turno</span><span>🔋 84%</span></div>
+       <div class="emp-card">
+         <div class="emp-photo" id="empPhoto">MR</div>
+         <div class="emp-id">
+           <div class="eyebrow" id="empCat">Acomodadora</div>
+           <h2 class="serif" id="empName">María Reséndiz</h2>
+           <div class="emp-status"><span class="ok-dot"></span><span id="empStatus">En sitio · Turno vespertino</span></div>
+         </div>
+       </div>
+       <div class="role-switch" id="roleSwitch"></div>
+     </div>
+
+     <div class="p-body" id="empBody">
+
+       <!-- TURNO -->
+       <section class="screen on" id="e-turno">
+         <div class="puesto-card">
+           <div class="pk"><span class="pl">Mi puesto hoy</span><span class="pz" id="empPuesto">Luneta · Sección B</span></div>
+           <div class="pk"><span class="pl">Acceso asignado</span><span class="pv" id="empAcceso">Acceso 1er Piso poniente</span></div>
+           <div class="pk"><span class="pl">Inicio de turno</span><span class="pv">18:30</span></div>
+         </div>
+
+         <div class="section-t">Aviso del supervisor</div>
+         <div class="alert a" id="empAviso"><div class="ai"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l18-5v12L3 14v-3zM11.6 16.8a3 3 0 0 1-5.8-1.6"/></svg></div><div class="at"><b id="empAvisoT">Apoyo a PCD en tu acceso</b><p id="empAvisoP">Llega un visitante en silla de ruedas. Acompáñalo a su lugar en Luneta.</p><div class="meta"><span>⏱ hace 2 min</span></div></div></div>
+
+         <div class="section-t">Acciones rápidas</div>
+         <div class="grid-acc">
+           <button class="acc-btn" onclick="empTab('asistencia')"><span class="ic men"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M6 21v-2a4 4 0 0 1 4-4M16 16l2 2 4-4"/></svg></span><span class="nm">Registrar asistencia</span><span class="ds">Huella o rostro</span></button>
+           <button class="acc-btn" onclick="empTab('reportar')"><span class="ic car"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></span><span class="nm">Levantar reporte</span><span class="ds">Incidente o apoyo</span></button>
+           <button class="acc-btn" onclick="empTab('puesto')"><span class="ic oro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5 8 12 8 12s8-7 8-12a8 8 0 0 0-8-8Z"/></svg></span><span class="nm">Mi puesto</span><span class="ds">Ubicación asignada</span></button>
+           <button class="acc-btn" onclick="empTab('reportar')"><span class="ic car"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg></span><span class="nm">Pedir apoyo</span><span class="ds">Aviso al supervisor</span></button>
+         </div>
+
+         <div class="section-t">Mis tareas de la función</div>
+         <div id="empTareas"></div>
+       </section>
+
+       <!-- ASISTENCIA (solo la propia) -->
+       <section class="screen" id="e-asistencia">
+         <div class="section-t">Mi registro de asistencia</div>
+         <div class="bio">
+           <div class="fp"><span class="ring"></span><span class="ring"></span>
+             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 10a2 2 0 0 1 2 2c0 1.5-.3 3-1 4.5"/><path d="M8.5 6.5A6 6 0 0 1 18 12c0 1-.1 2-.4 3"/><path d="M5.8 9A6 6 0 0 1 6 7"/><path d="M9 13c0 2.5-.5 4.5-1.2 6"/><path d="M12 12v1c0 3-.5 5.2-1.5 7"/><path d="M14.8 18.5c.4-1.3.6-2.6.7-3.9"/></svg>
+           </div>
+           <h3>Hola, <span id="empFirst">María</span></h3>
+           <p>Acerca tu huella o rostro para registrar</p>
+           <div class="bio-res"><div class="ri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></div><div><b>Entrada registrada</b><p class="mono">Hoy · 18:30 · Huella</p></div></div>
+           <button class="btn-out" onclick="alert('Registro de salida disponible al cierre del turno')">Registrar salida</button>
+         </div>
+         <div class="priv-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span>Solo tú ves tu asistencia. Tu supervisor ve tu estatus, no tus datos biométricos.</span></div>
+         <div class="section-t">Mi historial</div>
+         <div id="empHist"></div>
+       </section>
+
+       <!-- MI PUESTO (mapa solo su zona) -->
+       <section class="screen" id="e-puesto">
+         <div class="section-t">Mi puesto en el recinto</div>
+         <div class="map-card"><div id="empMapa"></div>
+           <div class="puesto-tag" id="empPuestoTag">📍 Luneta · Sección B</div>
+         </div>
+         <div class="section-t">Indicaciones</div>
+         <div id="empIndic"></div>
+       </section>
+
+       <!-- REPORTAR -->
+       <section class="screen" id="e-reportar">
+         <div class="section-t">Levantar un reporte</div>
+         <p style="font-size:12px;color:var(--niebla);line-height:1.5;margin:0 4px 12px">Selecciona el tipo. Se envía a tu supervisor con tu puesto.</p>
+         <div class="chip-scroll" id="empRepTipos" style="margin-bottom:12px"></div>
+         <textarea class="rep-text" id="empRepText" placeholder="Describe brevemente lo que ocurre…"></textarea>
+         <button class="btn-send" onclick="empEnviarReporte()">Enviar reporte</button>
+         <button class="btn-panic" onclick="empPanic()"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg> Pedir apoyo urgente</button>
+         <div class="section-t">Mis reportes</div>
+         <div id="empReportes"></div>
+       </section>
+
+       <!-- PERFIL -->
+       <section class="screen" id="e-perfil">
+         <div class="perfil-top">
+           <div class="perfil-photo" id="perfilPhoto">MR</div>
+           <h2 class="serif" id="perfilName">María Reséndiz</h2>
+           <p id="perfilCat">Acomodadora · Turno vespertino</p>
+         </div>
+         <div class="perfil-grid" id="perfilDatos"></div>
+         <div class="section-t">Permisos de mi cuenta</div>
+         <div class="perms" id="empPerms"></div>
+       </section>
+
+     </div>
+
+     <nav class="tabbar">
+       <button class="on" id="etab-turno" onclick="empTab('turno')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></svg>Turno</button>
+       <button id="etab-asistencia" onclick="empTab('asistencia')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M6 21v-2a4 4 0 0 1 4-4M16 16l2 2 4-4"/></svg>Asistencia</button>
+       <button id="etab-puesto" onclick="empTab('puesto')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5 8 12 8 12s8-7 8-12a8 8 0 0 0-8-8Z"/></svg>Mi puesto</button>
+       <button id="etab-reportar" onclick="empTab('reportar')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>Reportar</button>
+       <button id="etab-perfil" onclick="empTab('perfil')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M5 21v-1a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v1"/></svg>Perfil</button>
+     </nav>
+   </div><!-- /phoneEmp -->
+  </div>
+ </div>
+</div>
+
+<!-- ============ WEB ============ -->
+<div class="web-view" id="webView">
+ <div class="web-shell">
+  <aside class="side">
+    <div class="grp">Operación en vivo</div>
+    <button class="on" id="w-resumen" onclick="goWeb('resumen')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>Resumen</button>
+    <button id="w-vivo" onclick="goWeb('vivo')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5 8 12 8 12s8-7 8-12a8 8 0 0 0-8-8Z"/></svg>Personal en vivo<span class="cnt live">71</span></button>
+    <button id="w-mapa" onclick="goWeb('mapa')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3 3 5v16l6-2 6 2 6-2V3l-6 2-6-2zM9 3v16M15 5v16"/></svg>Mapa por zona</button>
+    <div class="grp">Programación</div>
+    <button id="w-eventos" onclick="goWeb('eventos')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Eventos<span class="cnt live">11</span></button>
+    <div class="grp">Actividades del supervisor</div>
+    <button id="w-atencion" onclick="goWeb('atencion')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Atención al cliente<span class="cnt">5</span></button>
+    <button id="w-conflictos" onclick="goWeb('conflictos')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-6 0v4M5 9h14l1 12H4z"/></svg>Conflictos<span class="cnt">2</span></button>
+    <button id="w-asistencia" onclick="goWeb('asistencia')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M6 21v-2a4 4 0 0 1 4-4M16 16l2 2 4-4"/></svg>Asistencia biométrica</button>
+    <button id="w-personal" onclick="goWeb('personal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8"/></svg>Personal</button>
+    <button id="w-protocolos" onclick="goWeb('protocolos')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 6v6c0 5 3.4 8.5 8 10 4.6-1.5 8-5 8-10V6z"/></svg>Protocolos</button>
+  </aside>
+
+  <main>
+    <!-- RESUMEN -->
+    <section class="webpane on" id="p-resumen">
+      <div class="main-head"><div><h2 class="serif">Centro de operaciones</h2><p class="sub">Gran Gala Filarmónica · turno vespertino · 71 personas en operativo</p></div><div class="evt-pill"><div><div class="d serif">71</div><div class="l">personal</div></div><div><div class="d serif">60</div><div class="l">en sitio</div></div></div></div>
+      <div class="web-kpis">
+        <div class="wk"><div class="ic men" style="background:var(--menta-suave)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--menta)" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5 8 12 8 12s8-7 8-12a8 8 0 0 0-8-8Z"/></svg></div><div class="lab">Personal en sitio</div><div class="val">60<small> /71</small></div><div class="trend up">▲ 8 en ruta</div></div>
+        <div class="wk"><div class="ic oro" style="background:var(--ambar-suave)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--oro)" stroke-width="2"><path d="M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M6 21v-2a4 4 0 0 1 4-4M16 16l2 2 4-4"/></svg></div><div class="lab">Asistencia del personal</div><div class="val">68<small> /71</small></div><div class="trend up">▲ 95.8%</div></div>
+        <div class="wk"><div class="ic car" style="background:var(--carmesi-suave)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--carmesi)" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-6 0v4M5 9h14l1 12H4z"/></svg></div><div class="lab">Conflictos</div><div class="val">2<small> activos</small></div><div class="trend dn">▼ 1 prioridad alta</div></div>
+        <div class="wk"><div class="ic azu" style="background:var(--azul-suave)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--azul)" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div class="lab">Atención al cliente</div><div class="val">5<small> abiertos</small></div><div class="trend up">▲ 18 resueltos</div></div>
+      </div>
+      <div class="web-grid">
+        <div class="panel"><div class="panel-h"><h3>Mapa por zona</h3><span class="mini">Toca una zona para el detalle</span></div><div id="mapaWeb"></div><div class="map-leg" style="margin-top:12px"><span><i style="background:var(--menta)"></i>Normal</span><span><i style="background:var(--ambar)"></i>Atención</span><span><i style="background:var(--carmesi)"></i>Alerta</span></div><div class="zona-detail" id="zonaDetailWeb"></div></div>
+        <div class="panel"><div class="panel-h"><h3>Actividad reciente</h3><span class="mini">en vivo</span></div><div id="webFeed"></div></div>
+      </div>
+    </section>
+
+    <!-- PERSONAL EN VIVO -->
+    <section class="webpane" id="p-vivo">
+      <div class="main-head"><div><h2 class="serif">Ubicación del personal en tiempo real</h2><p class="sub">Cada punto es un elemento del operativo, posicionado sobre el recinto · actualización en vivo</p></div><div class="evt-pill"><div><div class="d serif" id="vivoTotal">71</div><div class="l">en operativo</div></div></div></div>
+      <div class="web-grid live">
+        <div class="panel">
+          <div class="panel-h"><h3>Croquis en vivo</h3><span class="mini" id="liveCountWeb">244 en sitio · 18 en ruta</span></div>
+          <div id="mapaLiveWeb"></div>
+          <div class="chip-scroll" id="liveChipsWeb" style="margin:14px 0 0;padding:0"></div>
+        </div>
+        <div class="panel"><div class="panel-h"><h3>Elementos por tipo</h3></div><div class="roster" id="rosterWeb"></div>
+          <div style="margin-top:16px;padding:13px;border-radius:13px;background:var(--azul-suave);border:1px solid rgba(91,141,203,.25);font-size:12px;line-height:1.6;color:var(--marfil)"><b style="color:var(--azul)">ⓘ Cómo leerlo</b><br>Usa los filtros del croquis para aislar un tipo de elemento. El verde indica posición confirmada en sitio; el resto, desplazándose a su puesto.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MAPA -->
+    <section class="webpane" id="p-mapa">
+      <div class="main-head"><div><h2 class="serif">Mapa por zona</h2><p class="sub">Conocer todas las zonas · estado, aforo y personal asignado</p></div></div>
+      <div class="web-grid">
+        <div class="panel"><div id="mapaWeb2"></div><div class="map-leg" style="margin-top:12px"><span><i style="background:var(--menta)"></i>Normal</span><span><i style="background:var(--ambar)"></i>Atención</span><span><i style="background:var(--carmesi)"></i>Alerta</span></div></div>
+        <div class="panel"><div class="panel-h"><h3>Estado por zona</h3></div><table><thead><tr><th>Zona</th><th>Personal</th><th>Incidencias</th><th>Estado</th></tr></thead><tbody id="zonaTable"></tbody></table></div>
+      </div>
+    </section>
+
+    <!-- ATENCION -->
+    <section class="webpane" id="p-atencion">
+      <div class="main-head"><div><h2 class="serif">Atención al cliente</h2><p class="sub">Enfoque en la diversidad de públicos que ingresan al recinto</p></div></div>
+      <div class="web-grid">
+        <div class="panel"><div class="panel-h"><h3>Casos abiertos</h3><span class="mini">5 activos · 18 resueltos</span></div><table><thead><tr><th>Folio</th><th>Tipo</th><th>Zona</th><th>Estado</th></tr></thead><tbody id="casosTable"></tbody></table></div>
+        <div class="panel"><div class="panel-h"><h3>Solicitudes por perfil</h3><span class="mini">hoy</span></div><div class="diversidad">
+          <div class="dcard"><div class="top"><div class="di" style="background:var(--menta-suave);color:var(--menta)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="6" r="3"/><path d="M12 9v8M8 13h8"/></svg></div><b>Silla de ruedas / PCD</b></div><div class="num">14<small> apoyos</small></div></div>
+          <div class="dcard"><div class="top"><div class="di" style="background:var(--azul-suave);color:var(--azul)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/></svg></div><b>Adultos mayores</b></div><div class="num">22<small> traslados</small></div></div>
+          <div class="dcard"><div class="top"><div class="di" style="background:var(--ambar-suave);color:var(--oro)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 9h8M8 13h5M21 12a9 9 0 1 1-9-9"/></svg></div><b>Intérprete LSM</b></div><div class="num">3<small> sesiones</small></div></div>
+          <div class="dcard"><div class="top"><div class="di" style="background:var(--carmesi-suave);color:var(--carmesi)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/></svg></div><b>Turistas / idiomas</b></div><div class="num">9<small> guías</small></div></div>
+        </div></div>
+      </div>
+    </section>
+
+    <!-- CONFLICTOS -->
+    <section class="webpane" id="p-conflictos">
+      <div class="main-head"><div><h2 class="serif">Solución de conflictos</h2><p class="sub">Bitácora de incidencias e intervención del supervisor</p></div></div>
+      <div class="panel"><table><thead><tr><th>Folio</th><th>Tipo</th><th>Zona</th><th>Hora</th><th>Prioridad</th><th>Estado</th></tr></thead><tbody id="confTable"></tbody></table></div>
+    </section>
+
+    <!-- ASISTENCIA BIOMETRICA -->
+    <section class="webpane" id="p-asistencia">
+      <div class="main-head"><div><h2 class="serif">Asistencia biométrica</h2><p class="sub">Registro de entrada del personal por huella o reconocimiento facial</p></div></div>
+      <div class="web-kpis">
+        <div class="wk"><div class="lab">Plantilla del operativo</div><div class="val">71</div><div class="trend up">personas programadas</div></div>
+        <div class="wk"><div class="lab">Registrados</div><div class="val" style="color:var(--menta)">68</div><div class="trend up">▲ 95.8%</div></div>
+        <div class="wk"><div class="lab">Ausentes</div><div class="val" style="color:var(--carmesi)">3</div><div class="trend dn">por cubrir</div></div>
+        <div class="wk"><div class="lab">Retardos</div><div class="val" style="color:var(--ambar)">2</div><div class="trend dn">registrados</div></div>
+      </div>
+      <div class="web-grid">
+        <div class="panel"><div class="panel-h"><h3>Registros de entrada</h3><span class="mini">huella · rostro</span></div><table><thead><tr><th>Colaborador</th><th>Categoría</th><th>Entrada</th><th>Método</th><th>Estado</th></tr></thead><tbody id="checkinTable"></tbody></table></div>
+        <div class="panel"><div class="panel-h"><h3>Cobertura por categoría</h3></div><div class="roster" id="cobertura"></div></div>
+      </div>
+    </section>
+
+    <!-- PERSONAL -->
+    <section class="webpane" id="p-personal">
+      <div class="main-head"><div><h2 class="serif">Supervisión del personal propio</h2><p class="sub">Categorías del operativo, distribución y estatus</p></div></div>
+      <div class="panel"><table><thead><tr><th>Categoría</th><th>Programados</th><th>En sitio</th><th>En ruta</th><th>Cobertura</th></tr></thead><tbody id="staffTable"></tbody></table></div>
+    </section>
+
+    <!-- PROTOCOLOS -->
+    <section class="webpane" id="p-protocolos">
+      <div class="main-head"><div><h2 class="serif">Protocolos de emergencia</h2><p class="sub">Códigos, rutas de evacuación y puntos de reunión</p></div></div>
+      <div class="web-grid">
+        <div class="panel" id="protoPanel"></div>
+        <div class="panel"><div class="panel-h"><h3>Puntos de reunión</h3></div>
+          <div class="row"><div class="av" style="background:var(--menta-suave);color:var(--menta)">A</div><div class="main"><b>Explanada principal</b><p>Salida a Reforma · capacidad amplia</p></div><div class="tag ok">Despejado</div></div>
+          <div class="row"><div class="av" style="background:var(--menta-suave);color:var(--menta)">B</div><div class="main"><b>Estacionamiento A</b><p>Salida poniente · Campo Marte</p></div><div class="tag ok">Despejado</div></div>
+          <div class="row"><div class="av" style="background:var(--ambar-suave);color:var(--oro)">C</div><div class="main"><b>Estacionamiento B</b><p>Salida oriente · Chivatito</p></div><div class="tag warn">Flujo lento</div></div>
+          <div style="margin-top:14px;padding:13px;border-radius:13px;background:var(--carmesi-suave);border:1px solid rgba(206,74,68,.3);font-size:12.5px;line-height:1.6"><b style="color:var(--carmesi)">⚠ Recordatorio</b><br>El supervisor mantiene radio en todo momento y prioriza el apoyo a personas con movilidad reducida, adultos mayores y menores durante cualquier evacuación.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EVENTOS -->
+    <section class="webpane" id="p-eventos">
+      <div class="main-head"><div><h2 class="serif">Eventos</h2><p class="sub">Programación por mes · eventos pasados, del día y próximos, con resumen de cada uno</p></div><div class="evt-pill"><div><div class="d serif" id="evPasados">3</div><div class="l">pasados</div></div><div><div class="d serif" style="color:var(--oro)">1</div><div class="l">hoy</div></div><div><div class="d serif" id="evProximos">7</div><div class="l">próximos</div></div></div></div>
+      <div class="ev-filtros" id="evMeses"></div>
+      <div id="eventosWrap"></div>
+    </section>
+  </main>
+ </div>
+</div>
+
+<p class="footer-note">Simulación de producto · App de supervisor y plataforma web para el Auditorio Nacional de México.<br>Mapa basado en el croquis de distribución de personal. Datos de muestra.</p>
+</div>
+
+<script>
+/* ===== DATOS ===== */
+var ZONAS=[
+  {id:'luneta',nombre:'Luneta',estado:'atencion',inc:1,r0:72,r1:150,nota:'Mayor flujo de acomodo y apoyo a PCD.'},
+  {id:'p1',nombre:'Primer Piso',estado:'ok',inc:0,r0:150,r1:212,nota:'Cobertura completa de acomodadores.'},
+  {id:'p2',nombre:'Segundo Piso',estado:'alerta',inc:2,r0:212,r1:268,nota:'Refuerzo solicitado por afluencia.'}
+];
+var TIPOS=[
+  {id:'coord',nombre:'Coordinador',n:1,col:'var(--oro)',hex:'#E0A23B'},
+  {id:'sup', nombre:'Supervisores',n:2,col:'var(--azul)',hex:'#5B8DCB'},
+  {id:'bol', nombre:'Boleteros',n:14,col:'var(--r-bol)',hex:'#E08A3B'},
+  {id:'acom',nombre:'Acomodadores',n:54,col:'var(--r-acom)',hex:'#CE4A44'}
+];
+var CASOS=[
+  {f:'AT-218',t:'Silla de ruedas · acceso a Luneta',z:'Explanada',e:'curso',tag:'warn'},
+  {f:'AT-217',t:'Adulto mayor · apoyo a butaca',z:'Primer Piso',e:'curso',tag:'warn'},
+  {f:'AT-216',t:'Intérprete LSM solicitado',z:'Taquilla',e:'asignado',tag:'info'},
+  {f:'AT-215',t:'Turista · información en inglés',z:'Explanada',e:'curso',tag:'info'},
+  {f:'AT-214',t:'Objeto perdido · bolso',z:'Segundo Piso',e:'abierto',tag:'mut'}
+];
+var CONFLICTOS=[
+  {f:'CF-044',t:'Boleto duplicado · butaca G-114',z:'Segundo Piso',h:'20:15',p:'Alta',tag:'bad',e:'En sitio'},
+  {f:'CF-043',t:'Desacuerdo por reacomodo',z:'Luneta',h:'19:58',p:'Media',tag:'warn',e:'Mediación'}
+];
+var CHECKINS=[
+  {n:'R. Salazar',c:'Coordinador',h:'18:05',m:'Rostro',ok:true},
+  {n:'L. Treviño',c:'Supervisor',h:'18:10',m:'Huella',ok:true},
+  {n:'M. Reséndiz',c:'Acomodador',h:'18:30',m:'Rostro',ok:true},
+  {n:'A. Bautista',c:'Boletero',h:'18:27',m:'Huella',ok:true},
+  {n:'J. Carranza',c:'Acomodador',h:'18:29',m:'Huella',ok:true},
+  {n:'S. Delgado',c:'Acomodador',h:'18:44',m:'Huella',ok:false},
+  {n:'P. Vázquez',c:'Boletero',h:'18:41',m:'Rostro',ok:false},
+  {n:'C. Núñez',c:'Acomodador',h:'18:18',m:'Rostro',ok:true}
+];
+var FEED=[
+  {t:'Conflicto por lugar duplicado · Segundo Piso',m:'hace 3 min',c:'car'},
+  {t:'Apoyo a silla de ruedas solicitado · Explanada',m:'hace 4 min',c:'oro'},
+  {t:'2 acomodadores reubicados a Luneta',m:'hace 6 min',c:'men'},
+  {t:'Supervisor en ronda · Primer Piso',m:'hace 8 min',c:'azu'},
+  {t:'Boletero reforzando Acceso 2º Piso',m:'hace 9 min',c:'oro'},
+  {t:'Intérprete LSM asignado · Taquilla',m:'hace 12 min',c:'men'}
+];
+var PROTOCOLOS=[
+  {c:'#CE4A44',n:'Código Rojo · Incendio',pasos:['Activar alarma y avisar al Puesto de Mando por radio.','No usar elevadores; dirigir al público a las salidas más cercanas.','Evacuar por zonas, empezando por Luneta y Primer Piso.','Confirmar despeje de butacas y reportar zona libre.'],punto:'Punto A — Explanada / Reforma'},
+  {c:'#5B8DCB',n:'Código Azul · Emergencia médica',pasos:['Solicitar médico/paramédico por radio indicando zona y fila.','Despejar el área alrededor de la persona.','Acompañar a paramédicos a la ubicación exacta.','Registrar la incidencia en bitácora.'],punto:'Servicio médico · planta baja'},
+  {c:'#E6A23C',n:'Código Amarillo · Evacuación parcial',pasos:['Identificar y delimitar la zona afectada.','Reubicar al público de esa zona a un área segura.','Mantener informado al resto de la sala con calma.','Esperar indicación del Puesto de Mando.'],punto:'Punto B — Estacionamiento A'},
+  {c:'#4FB286',n:'Sismo',pasos:['Mantener la calma y pedir al público no correr.','Alejar de cristales y estructuras colgantes.','Al terminar, iniciar evacuación ordenada por rutas.','Priorizar PCD, adultos mayores y menores.'],punto:'Explanada y estacionamientos'}
+];
+var EVENTOS=[
+  {mes:'Junio',items:[
+    {d:'05',m:'Jun',nombre:'Sinfónica Nacional',tipo:'Concierto · 20:30',estado:'pasado',personal:71,asist:'69/71',conf:1,aten:12},
+    {d:'12',m:'Jun',nombre:'Ballet de la Ciudad',tipo:'Danza · 19:00',estado:'pasado',personal:68,asist:'66/68',conf:0,aten:9},
+    {d:'19',m:'Jun',nombre:'Noche de Jazz',tipo:'Concierto · 21:00',estado:'pasado',personal:71,asist:'70/71',conf:2,aten:15},
+    {d:'26',m:'Jun',nombre:'Gran Gala Filarmónica',tipo:'Gala · 20:30',estado:'hoy',personal:71,asist:'68/71',conf:2,aten:5},
+    {d:'29',m:'Jun',nombre:'Comedia en Vivo',tipo:'Stand-up · 20:00',estado:'proximo',personal:60,asist:'—',conf:'—',aten:'—'}
+  ]},
+  {mes:'Julio',items:[
+    {d:'10',m:'Jul',nombre:'Rock Sinfónico',tipo:'Concierto · 21:00',estado:'proximo',personal:71,asist:'—',conf:'—',aten:'—'},
+    {d:'24',m:'Jul',nombre:'Festival Folclórico',tipo:'Danza · 19:30',estado:'proximo',personal:71,asist:'—',conf:'—',aten:'—'}
+  ]},
+  {mes:'Agosto',items:[
+    {d:'08',m:'Ago',nombre:'Ópera de Temporada',tipo:'Ópera · 20:00',estado:'proximo',personal:71,asist:'—',conf:'—',aten:'—'},
+    {d:'22',m:'Ago',nombre:'Concierto Pop',tipo:'Concierto · 21:00',estado:'proximo',personal:71,asist:'—',conf:'—',aten:'—'}
+  ]},
+  {mes:'Septiembre',items:[
+    {d:'15',m:'Sep',nombre:'Gala Patria',tipo:'Gala · 20:30',estado:'proximo',personal:71,asist:'—',conf:'—',aten:'—'},
+    {d:'28',m:'Sep',nombre:'Sinfónica de Cámara',tipo:'Concierto · 19:00',estado:'proximo',personal:60,asist:'—',conf:'—',aten:'—'}
+  ]}
+];
+var evMesFiltro='Todos';
+
+/* ===== GEOMETRÍA DEL RECINTO ===== */
+var CX=220,CY=498,A0=196,A1=344;
+function rnd(){rnd._s=(rnd._s*1103515245+12345)&0x7fffffff;return rnd._s/0x7fffffff;}rnd._s=20260619;
+function polar(r,d){var a=d*Math.PI/180;return [CX+r*Math.cos(a),CY+r*Math.sin(a)];}
+function arc(r0,r1,a0,a1){var p1=polar(r0,a0),p2=polar(r1,a0),p3=polar(r1,a1),p4=polar(r0,a1);
+  return 'M'+p1[0].toFixed(1)+' '+p1[1].toFixed(1)+' L'+p2[0].toFixed(1)+' '+p2[1].toFixed(1)+
+    ' A'+r1+' '+r1+' 0 0 1 '+p3[0].toFixed(1)+' '+p3[1].toFixed(1)+
+    ' L'+p4[0].toFixed(1)+' '+p4[1].toFixed(1)+' A'+r0+' '+r0+' 0 0 0 '+p1[0].toFixed(1)+' '+p1[1].toFixed(1)+' Z';}
+var COL={ok:'#4FB286',atencion:'#E6A23C',alerta:'#CE4A44'};
+
+function venueBase(mode){
+  var s='<defs><radialGradient id="stg" cx="50%" cy="100%" r="90%"><stop offset="0%" stop-color="#F2C879"/><stop offset="100%" stop-color="#E0A23B"/></radialGradient></defs>';
+  s+='<rect x="44" y="40" width="352" height="520" rx="6" fill="none" stroke="#5a4f60" stroke-width="1.1" stroke-dasharray="4 4"/>';
+  s+='<text x="220" y="20" fill="#A294A8" font-size="11" text-anchor="middle" letter-spacing="3">REFORMA</text>';
+  s+='<rect x="50" y="44" width="58" height="15" rx="2" fill="none" stroke="#5a4f60"/><text x="79" y="55" fill="#9B8FA3" font-size="7" text-anchor="middle">MARQUESINA</text>';
+  s+='<text x="220" y="55" fill="#9B8FA3" font-size="8" text-anchor="middle">BAHÍA</text>';
+  s+='<text x="372" y="55" fill="#9B8FA3" font-size="7" text-anchor="middle">JUMBOTRON</text>';
+  s+='<text x="30" y="300" fill="#7C6F82" font-size="8" text-anchor="middle" transform="rotate(-90 30 300)">ESTACIONAMIENTO A</text>';
+  s+='<text x="412" y="300" fill="#7C6F82" font-size="8" text-anchor="middle" transform="rotate(90 412 300)">ESTACIONAMIENTO B</text>';
+  s+='<rect x="70" y="66" width="300" height="92" rx="8" fill="#241a2a" stroke="#5a4f60"/>';
+  s+='<text x="220" y="84" fill="#9B8FA3" font-size="9" text-anchor="middle" letter-spacing="1">EXPLANADA</text>';
+  s+='<rect x="80" y="94" width="54" height="22" rx="3" fill="#2c2032" stroke="#5a4f60"/><text x="107" y="108" fill="#A294A8" font-size="7" text-anchor="middle">TAQUILLA</text>';
+  s+='<rect x="306" y="94" width="54" height="22" rx="3" fill="#2c2032" stroke="#5a4f60"/><text x="333" y="108" fill="#A294A8" font-size="6.5" text-anchor="middle">COFFEE ST.</text>';
+  s+='<circle cx="250" cy="138" r="5" fill="none" stroke="#5a4f60"/><text x="250" y="154" fill="#7C6F82" font-size="6" text-anchor="middle">ESCULTURA</text>';
+  s+='<text x="178" y="138" fill="#7C6F82" font-size="6.5" text-anchor="middle">ACCESO 2º PISO</text>';
+  s+='<text x="118" y="176" fill="#7C6F82" font-size="6.5" text-anchor="middle">ACCESO 1er PISO</text>';
+  s+='<text x="322" y="176" fill="#7C6F82" font-size="6.5" text-anchor="middle">ACCESO 1er PISO</text>';
+  var faint = mode==='live';
+  ZONAS.forEach(function(z){
+    var col = faint ? '#6a5c70' : COL[z.estado];
+    var op = faint ? 0.10 : 0.28;
+    s+='<path class="zona" data-z="'+z.id+'" data-m="'+mode+'" d="'+arc(z.r0,z.r1,A0,A1)+'" fill="'+col+'" fill-opacity="'+op+'" stroke="'+col+'" stroke-width="1.2"/>';
+    var mr=(z.r0+z.r1)/2,mp=polar(mr,270);
+    s+='<text x="'+mp[0].toFixed(0)+'" y="'+mp[1].toFixed(0)+'" fill="#F4EFE9" font-size="8" text-anchor="middle" font-weight="bold" pointer-events="none" opacity="'+(faint?0.55:1)+'">'+z.nombre.toUpperCase()+'</text>';
+  });
+  s+='<path d="'+arc(54,70,A0+4,A1-4)+'" fill="url(#stg)" stroke="#F2C879" stroke-width="0.8"/>';
+  s+='<rect x="184" y="500" width="72" height="34" rx="4" fill="url(#stg)" stroke="#F2C879"/><text x="220" y="521" fill="#1a120a" font-size="10" text-anchor="middle" font-weight="bold">FORO</text>';
+  s+='<rect x="50" y="300" width="18" height="68" rx="3" fill="#2c2032" stroke="#E0A23B" stroke-opacity="0.5"/><text x="59" y="336" fill="#A294A8" font-size="6" text-anchor="middle" transform="rotate(-90 59 336)">CAJÓN ORO</text>';
+  s+='<rect x="372" y="300" width="18" height="68" rx="3" fill="#2c2032" stroke="#E0A23B" stroke-opacity="0.5"/><text x="381" y="336" fill="#A294A8" font-size="6" text-anchor="middle" transform="rotate(90 381 336)">CAJÓN ORO</text>';
+  s+='<rect x="50" y="395" width="46" height="38" rx="3" fill="#241a2a" stroke="#5a4f60"/><text x="73" y="417" fill="#A294A8" font-size="7" text-anchor="middle">LUNARIO</text>';
+  s+='<rect x="344" y="395" width="46" height="38" rx="3" fill="#241a2a" stroke="#5a4f60"/><text x="367" y="414" fill="#A294A8" font-size="6" text-anchor="middle">TALLER METRO</text>';
+  s+='<text x="220" y="548" fill="#7C6F82" font-size="6.5" text-anchor="middle">CAMERINOS · OFICINAS</text>';
+  s+='<text x="312" y="503" fill="#7C6F82" font-size="6" text-anchor="middle">BACK STAGE</text>';
+  s+='<text x="92" y="503" fill="#7C6F82" font-size="6" text-anchor="middle">TALLER</text>';
+  return s;
+}
+function svgWrap(inner){return '<svg viewBox="0 0 440 600" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block">'+inner+'</svg>';}
+
+function buildZonas(id){
+  document.getElementById(id).innerHTML=svgWrap(venueBase('zonas'));
+  document.querySelectorAll('#'+id+' .zona').forEach(function(el){el.addEventListener('click',function(){selectZona(el.getAttribute('data-z'),el.getAttribute('data-m'));});});
+}
+function selectZona(zid,mode){
+  var z=ZONAS.find(function(x){return x.id===zid;});
+  var nPers=PERSONAL.filter(function(p){return p.zona===zid;}).length;
+  var nAcom=PERSONAL.filter(function(p){return p.zona===zid&&p.t==='acom';}).length;
+  var estTxt={ok:'Normal',atencion:'Requiere atención',alerta:'Alerta activa'}[z.estado];
+  var estCol={ok:'var(--menta-suave);color:var(--menta)',atencion:'var(--ambar-suave);color:var(--ambar)',alerta:'var(--carmesi-suave);color:var(--carmesi)'}[z.estado];
+  var html='<h3 class="serif">'+z.nombre+'<span class="est" style="background:'+estCol+'">'+estTxt+'</span></h3><div class="zd-grid">'+
+    '<div><div class="n">'+nPers+'</div><div class="l">personal</div></div>'+
+    '<div><div class="n">'+nAcom+'</div><div class="l">acomodadores</div></div>'+
+    '<div><div class="n" style="'+(z.inc>0?'color:var(--carmesi)':'')+'">'+z.inc+'</div><div class="l">incidencias</div></div></div>'+
+    '<p style="font-size:11.5px;color:var(--niebla);margin-top:11px;line-height:1.5">'+z.nota+'</p>';
+  ['zonaDetail','zonaDetailWeb'].forEach(function(b){var el=document.getElementById(b);if(el){el.innerHTML=html;el.classList.add('on');}});
+  document.querySelectorAll('.zona').forEach(function(e){e.classList.remove('sel');});
+  document.querySelectorAll('.zona[data-z="'+zid+'"]').forEach(function(e){e.classList.add('sel');});
+}
+
+/* ===== PERSONAL (generación) ===== */
+var PERSONAL=[];
+function inArc(r0,r1,af){var a=A0+8+rnd()*(A1-A0-16);var r=r0+5+rnd()*(r1-r0-10);var p=polar(r,a);return [p[0],p[1]];}
+function inRect(x,y,w,h){return [x+rnd()*w,y+rnd()*h];}
+function zonaByR(x,y){var dx=x-CX,dy=y-CY,r=Math.sqrt(dx*dx+dy*dy);if(r<=150)return 'luneta';if(r<=212)return 'p1';if(r<=268)return 'p2';return 'ext';}
+function genPersonal(){
+  PERSONAL=[];var id=0;
+  function push(t,x,y,zona){PERSONAL.push({id:id++,t:t,x:x,y:y,hx:x,hy:y,zona:zona||zonaByR(x,y),st:rnd()<0.86?'sitio':'ruta'});}
+  function bowl(t,cnt,w){ // w = [luneta,p1,p2] weights
+    var tiers=[[72,150],[150,212],[212,268]],tot=w[0]+w[1]+w[2];
+    for(var i=0;i<cnt;i++){var rr=rnd()*tot,ti=rr<w[0]?0:rr<w[0]+w[1]?1:2;var p=inArc(tiers[ti][0],tiers[ti][1]);push(t,p[0],p[1]);}
+  }
+  function perim(t,cnt,boxes){for(var i=0;i<cnt;i++){var b=boxes[Math.floor(rnd()*boxes.length)];var p=inRect(b[0],b[1],b[2],b[3]);push(t,p[0],p[1],b[4]);}}
+  var edges=[[48,120,14,420,'ext'],[378,120,14,420,'ext']];
+  var topAcc=[[90,62,260,20,'ext'],[120,120,200,40,'ext']];
+  var taq=[[80,94,54,22,'ext'],[306,94,54,22,'ext']];
+  bowl('acom',54,[22,18,14]);
+  perim('bol',14,topAcc.concat(taq));
+  bowl('sup',1,[1,0,1]); perim('sup',1,[[120,120,200,40,'ext']]);
+  perim('coord',1,[[180,122,80,28,'ext']]);
+}
+
+/* ===== LIVE MAP ===== */
+var liveFilter='all';
+function buildLive(id){
+  var dots='';
+  PERSONAL.forEach(function(p){
+    var hex=TIPOS.find(function(t){return t.id===p.t;}).hex;
+    var ring=p.st==='ruta'?'<circle data-pid="'+p.id+'" class="pdot pt-'+p.t+' rg" cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="5.5" fill="none" stroke="'+hex+'" stroke-opacity="0.4" stroke-width="1"/>':'';
+    dots+=ring+'<circle data-pid="'+p.id+'" class="pdot pt-'+p.t+'" cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="3" fill="'+hex+'" stroke="#0c0910" stroke-width="0.5"/>';
+  });
+  document.getElementById(id).innerHTML=svgWrap(venueBase('live')+dots);
+  applyFilter();
+}
+function buildLiveChips(id){
+  var h='<div class="chip '+(liveFilter==='all'?'on':'')+'" onclick="setFilter(\'all\')">Todos · 71</div>';
+  TIPOS.forEach(function(t){h+='<div class="chip '+(liveFilter===t.id?'on':'')+'" onclick="setFilter(\''+t.id+'\')"><i style="background:'+t.hex+'"></i>'+t.nombre+' · '+t.n+'</div>';});
+  document.getElementById(id).innerHTML=h;
+}
+function setFilter(f){liveFilter=f;buildLiveChips('liveChipsApp');buildLiveChips('liveChipsWeb');applyFilter();updateLiveDetail();}
+function applyFilter(){
+  document.querySelectorAll('.pdot').forEach(function(el){
+    var show = liveFilter==='all' || el.classList.contains('pt-'+liveFilter);
+    el.classList.toggle('hidden',!show);
+  });
+}
+function updateLiveDetail(){
+  var list = liveFilter==='all'?PERSONAL:PERSONAL.filter(function(p){return p.t===liveFilter;});
+  var sitio=list.filter(function(p){return p.st==='sitio';}).length, ruta=list.length-sitio;
+  var nm = liveFilter==='all'?'Todos los elementos':TIPOS.find(function(t){return t.id===liveFilter;}).nombre;
+  var ca=document.getElementById('liveCountApp');if(ca)ca.textContent=list.length+' '+nm.toLowerCase();
+  var cw=document.getElementById('liveCountWeb');if(cw)cw.textContent=sitio+' en sitio · '+ruta+' en ruta';
+  var det=document.getElementById('liveDetailApp');
+  if(det){
+    var zc={luneta:0,p1:0,p2:0,ext:0};list.forEach(function(p){zc[p.zona]=(zc[p.zona]||0)+1;});
+    det.innerHTML='<div class="row"><div class="av" style="background:var(--menta-suave);color:var(--menta)">●</div><div class="main"><b>'+sitio+' en sitio · '+ruta+' en ruta</b><p>'+nm+'</p></div></div>'+
+      '<div class="kpi-row"><div class="kpi"><div class="lab">Luneta</div><div class="val" style="font-size:20px">'+zc.luneta+'</div></div><div class="kpi"><div class="lab">Primer Piso</div><div class="val" style="font-size:20px">'+zc.p1+'</div></div></div>'+
+      '<div class="kpi-row" style="margin-top:8px"><div class="kpi"><div class="lab">Segundo Piso</div><div class="val" style="font-size:20px">'+zc.p2+'</div></div><div class="kpi"><div class="lab">Perímetro / accesos</div><div class="val" style="font-size:20px">'+zc.ext+'</div></div></div>';
+  }
+}
+function animateLive(){
+  setInterval(function(){
+    var moved={};
+    for(var k=0;k<55;k++){
+      var p=PERSONAL[Math.floor(rnd()*PERSONAL.length)];
+      p.x=Math.max(p.hx-6,Math.min(p.hx+6,p.x+(rnd()-0.5)*7));
+      p.y=Math.max(p.hy-6,Math.min(p.hy+6,p.y+(rnd()-0.5)*7));
+      moved[p.id]=p;
+    }
+    Object.keys(moved).forEach(function(idk){
+      var p=moved[idk];
+      document.querySelectorAll('[data-pid="'+p.id+'"]').forEach(function(el){el.setAttribute('cx',p.x.toFixed(1));el.setAttribute('cy',p.y.toFixed(1));});
+    });
+  },1500);
+}
+
+/* ===== RENDER LISTAS ===== */
+function rosterData(){
+  return TIPOS.map(function(t){
+    var inSitio=PERSONAL.filter(function(p){return p.t===t.id&&p.st==='sitio';}).length;
+    var inRuta=PERSONAL.filter(function(p){return p.t===t.id&&p.st==='ruta';}).length;
+    return {t:t,sitio:inSitio,ruta:inRuta};
+  });
+}
+function renderRosterApp(){
+  var h='';rosterData().forEach(function(r){
+    h+='<div class="row"><div class="av" style="background:'+r.t.hex+'22;color:'+r.t.hex+'">'+r.t.n+'</div><div class="main"><b>'+r.t.nombre+'</b><p>'+r.sitio+' en sitio · '+r.ruta+' en ruta</p></div><div class="tag '+(r.ruta===0?'ok':'info')+'">'+(r.ruta===0?'Completo':r.ruta+' ↗')+'</div></div>';
+  });
+  document.getElementById('rosterApp').innerHTML=h;
+}
+function renderRosterWeb(){
+  var h='';rosterData().forEach(function(r){
+    var pct=Math.round(r.sitio/r.t.n*100);
+    h+='<div class="rrow"><span class="rd" style="background:'+r.t.hex+'"></span><span class="rn">'+r.t.nombre+'</span><span class="rb"><i style="width:'+pct+'%;background:'+r.t.hex+'"></i></span><span class="rc">'+r.t.n+'</span></div>';
+  });
+  document.getElementById('rosterWeb').innerHTML=h;
+}
+function renderAt(tab){
+  var h='';
+  if(tab==='casos'){CASOS.forEach(function(c){h+='<div class="row"><div class="av" style="background:var(--ambar-suave);color:var(--oro)">'+c.f.slice(-2)+'</div><div class="main"><b>'+c.t+'</b><p class="mono">'+c.f+' · '+c.z+'</p></div><div class="tag '+c.tag+'">'+({curso:'En curso',asignado:'Asignado',abierto:'Abierto'}[c.e])+'</div></div>';});document.getElementById('atTitle').textContent='Casos abiertos';}
+  else if(tab==='conflictos'){CONFLICTOS.forEach(function(c){h+='<div class="row"><div class="av" style="background:var(--carmesi-suave);color:var(--carmesi)">'+c.f.slice(-2)+'</div><div class="main"><b>'+c.t+'</b><p class="mono">'+c.f+' · '+c.z+' · '+c.h+'</p></div><div class="tag '+c.tag+'">'+c.p+'</div></div>';});document.getElementById('atTitle').textContent='Conflictos a resolver';}
+  else{var a=[['Silla de ruedas / PCD',14],['Adultos mayores',22],['Intérprete LSM',3],['Turistas / idiomas',9],['Menores acompañados',5]];a.forEach(function(x){h+='<div class="row"><div class="av" style="background:var(--menta-suave);color:var(--menta)">♿</div><div class="main"><b>'+x[0]+'</b><p>Solicitudes atendidas hoy</p></div><div class="tag info">'+x[1]+'</div></div>';});document.getElementById('atTitle').textContent='Accesibilidad e inclusión';}
+  document.getElementById('atList').innerHTML=h;
+  ['casos','conflictos','acc'].forEach(function(t){var el=document.getElementById('cm-'+t);if(el)el.classList.toggle('on',t===tab);});
+}
+function setAtTab(t){renderAt(t);}
+function renderCheckins(){
+  var h='';CHECKINS.forEach(function(c){h+='<div class="row"><div class="av" style="background:var(--terciopelo-2)">'+c.n.split(' ').map(function(p){return p[0];}).join('').slice(0,2)+'</div><div class="main"><b>'+c.n+'</b><p>'+c.c+' · '+c.h+' · '+c.m+'</p></div><div class="tag '+(c.ok?'ok':'warn')+'">'+(c.ok?'A tiempo':'Retardo')+'</div></div>';});
+  document.getElementById('checkinList').innerHTML=h;
+}
+
+/* ===== WEB tablas ===== */
+function setHTML(id,h){var el=document.getElementById(id);if(el)el.innerHTML=h;}
+function fillWeb(){
+  var zt='';ZONAS.forEach(function(z){var np=PERSONAL.filter(function(p){return p.zona===z.id;}).length;zt+='<tr><td><b>'+z.nombre+'</b></td><td>'+np+'</td><td style="'+(z.inc>0?'color:var(--carmesi)':'')+'">'+z.inc+'</td><td><span class="dotz"><i style="background:'+COL[z.estado]+'"></i>'+({ok:'Normal',atencion:'Atención',alerta:'Alerta'}[z.estado])+'</span></td></tr>';});setHTML('zonaTable',zt);
+  var ct='';CASOS.forEach(function(c){ct+='<tr><td class="mono">'+c.f+'</td><td>'+c.t+'</td><td>'+c.z+'</td><td><span class="tag '+c.tag+'">'+({curso:'En curso',asignado:'Asignado',abierto:'Abierto'}[c.e])+'</span></td></tr>';});setHTML('casosTable',ct);
+  var cf='';CONFLICTOS.forEach(function(c){cf+='<tr><td class="mono">'+c.f+'</td><td>'+c.t+'</td><td>'+c.z+'</td><td class="mono">'+c.h+'</td><td><span class="tag '+c.tag+'">'+c.p+'</span></td><td>'+c.e+'</td></tr>';});setHTML('confTable',cf);
+  var ck='';CHECKINS.forEach(function(c){ck+='<tr><td><b>'+c.n+'</b></td><td><span class="mono">'+c.c+'</span></td><td class="mono">'+c.h+'</td><td>'+c.m+'</td><td><span class="tag '+(c.ok?'ok':'warn')+'">'+(c.ok?'A tiempo':'Retardo')+'</span></td></tr>';});setHTML('checkinTable',ck);
+  var cob='';rosterData().forEach(function(r){var pct=Math.round(r.sitio/r.t.n*100);cob+='<div class="rrow"><span class="rd" style="background:'+r.t.hex+'"></span><span class="rn">'+r.t.nombre+'</span><span class="rb"><i style="width:'+pct+'%;background:'+r.t.hex+'"></i></span><span class="rc">'+r.sitio+'<small style="font-size:11px;color:var(--niebla);font-family:Manrope">/'+r.t.n+'</small></span></div>';});setHTML('cobertura',cob);
+  var st='';rosterData().forEach(function(r){var pct=Math.round(r.sitio/r.t.n*100);st+='<tr><td><span class="dotz"><i style="background:'+r.t.hex+'"></i><b>'+r.t.nombre+'</b></span></td><td>'+r.t.n+'</td><td style="color:var(--menta)">'+r.sitio+'</td><td style="color:var(--azul)">'+r.ruta+'</td><td><span class="tag '+(pct>=90?'ok':'warn')+'">'+pct+'%</span></td></tr>';});setHTML('staffTable',st);
+  var fd='';FEED.forEach(function(f){fd+='<div class="row" style="background:var(--noche-2)"><div class="av" style="background:var(--'+({car:'carmesi',oro:'ambar',men:'menta',azu:'azul'}[f.c])+'-suave);color:var(--'+({car:'carmesi',oro:'oro',men:'menta',azu:'azul'}[f.c])+')">•</div><div class="main"><b style="font-weight:600;font-size:13px">'+f.t+'</b><p>'+f.m+'</p></div></div>';});setHTML('webFeed',fd);
+  var pp='';PROTOCOLOS.forEach(function(p,i){pp+='<details class="proto" '+(i===0?'open':'')+'><summary><span class="pc" style="background:'+p.c+'"></span><b>'+p.n+'</b><span class="ar">▾</span></summary><div class="pbody"><ol>'+p.pasos.map(function(s){return '<li>'+s+'</li>';}).join('')+'</ol><div class="punto">📍 '+p.punto+'</div></div></details>';});setHTML('protoPanel','<div class="panel-h"><h3>Códigos de emergencia</h3></div>'+pp);
+}
+
+/* ===== NAVEGACIÓN ===== */
+var HINTS={supervisor:'App del supervisor en piso. Ve solo su zona y su equipo. Tema oscuro para no emitir luz en la sala.',empleado:'App del elemento operativo. Solo ve lo suyo: su asistencia, su puesto y sus reportes. Cambia de categoría arriba para ver cómo varía la información según el rol.'};
+function setRole(r){
+  var isWeb=r==='mando';
+  document.getElementById('appView').style.display=isWeb?'none':'block';
+  document.getElementById('webView').classList.toggle('on',isWeb);
+  document.getElementById('phoneSup').style.display=r==='supervisor'?'block':'none';
+  document.getElementById('phoneEmp').style.display=r==='empleado'?'block':'none';
+  ['empleado','supervisor','mando'].forEach(function(x){document.getElementById('t-'+x).classList.toggle('on',x===r);});
+  if(!isWeb&&HINTS[r])document.getElementById('appHint').textContent=HINTS[r];
+  if(r==='empleado')empTab('turno');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function goTab(t){['inicio','mapa','atencion','asistencia','personal'].forEach(function(s){var sc=document.getElementById('s-'+s);if(sc)sc.classList.toggle('on',s===t);var tb=document.getElementById('tab-'+s);if(tb)tb.classList.toggle('on',s===t);});scrollPhoneTop();}
+function setMapMode(m){
+  document.getElementById('mapZonasWrap').style.display=m==='zonas'?'block':'none';
+  document.getElementById('mapLiveWrap').style.display=m==='live'?'block':'none';
+  document.getElementById('mm-zonas').classList.toggle('on',m==='zonas');
+  document.getElementById('mm-live').classList.toggle('on',m==='live');
+  if(m==='live'){buildLive('mapaLiveApp');buildLiveChips('liveChipsApp');updateLiveDetail();}
+}
+function goWeb(p){['resumen','vivo','mapa','eventos','atencion','conflictos','asistencia','personal','protocolos'].forEach(function(s){var pn=document.getElementById('p-'+s);if(pn)pn.classList.toggle('on',s===p);var b=document.getElementById('w-'+s);if(b)b.classList.toggle('on',s===p);});
+  if(p==='mapa')buildZonas('mapaWeb2');
+  if(p==='vivo'){buildLive('mapaLiveWeb');buildLiveChips('liveChipsWeb');updateLiveDetail();}
+  if(p==='eventos')renderEventos();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ===== EVENTOS ===== */
+function setEvMes(m){evMesFiltro=m;renderEventos();}
+function renderEventos(){
+  var meses=['Todos'].concat(EVENTOS.map(function(x){return x.mes;}));
+  document.getElementById('evMeses').innerHTML=meses.map(function(m){return '<button class="'+(evMesFiltro===m?'on':'')+'" onclick="setEvMes(\''+m+'\')">'+(m==='Todos'?'Todos':'Eventos '+m)+'</button>';}).join('');
+  var badge={pasado:'Pasado',hoy:'Hoy',proximo:'Próximo'};
+  var html='';
+  EVENTOS.forEach(function(grupo){
+    if(evMesFiltro!=='Todos'&&grupo.mes!==evMesFiltro)return;
+    html+='<div class="ev-month"><div class="ev-month-h"><h3>Eventos de '+grupo.mes+'</h3><span>'+grupo.items.length+' eventos</span></div><div class="ev-grid">';
+    grupo.items.forEach(function(e){
+      var prog=e.estado==='proximo';
+      html+='<div class="ev-card '+e.estado+'"><div class="ev-top">'+
+        '<div class="ev-date"><div class="d">'+e.d+'</div><div class="m">'+e.m+'</div></div>'+
+        '<div class="ev-info"><h4>'+e.nombre+'</h4><div class="tipo">'+e.tipo+'</div></div>'+
+        '<span class="ev-badge '+e.estado+'">'+badge[e.estado]+'</span></div>'+
+        '<div class="ev-stats">'+
+          '<div><div class="n">'+e.personal+'</div><div class="l">'+(prog?'personal prog.':'personal')+'</div></div>'+
+          '<div><div class="n">'+e.asist+'</div><div class="l">asistencia</div></div>'+
+          '<div><div class="n" style="'+(typeof e.conf==='number'&&e.conf>0?'color:var(--carmesi)':'')+'">'+e.conf+'</div><div class="l">conflictos</div></div>'+
+          '<div><div class="n">'+e.aten+'</div><div class="l">atenciones</div></div>'+
+        '</div></div>';
+    });
+    html+='</div></div>';
+  });
+  document.getElementById('eventosWrap').innerHTML=html;
+}
+
+/* ===== EMPLEADO ===== */
+var EMP_ROLES={
+  acom:{cat:'Acomodadora',nombre:'María Reséndiz',ini:'MR',zona:'luneta',puesto:'Luneta · Sección B',acceso:'Acceso 1er Piso poniente',
+    avisoT:'Apoyo a PCD en tu acceso',avisoP:'Llega un visitante en silla de ruedas. Acompáñalo a su lugar en Luneta.',
+    tareas:['Revisar boletos en mi sección','Acompañar a personas con movilidad reducida','Indicar salidas de emergencia','Reportar butacas dañadas'],
+    indic:['Mantén despejado el pasillo central.','Prioriza a adultos mayores y PCD al ingresar.','Avisa al supervisor si tu sección llega a cupo.'],
+    repTipos:['Conflicto por lugar','Persona requiere apoyo','Butaca dañada','Objeto perdido'],
+    reportes:[{t:'Butaca G-114 con boleto duplicado',h:'20:15',e:'Enviado'},{t:'Apoyo a adulto mayor · fila 12',h:'19:58',e:'Atendido'}],
+    perms:{ver:['Mi asistencia','Mi puesto y sección','Mis tareas y avisos'],hacer:['Registrar mi asistencia','Levantar reportes de público'],no:['Asistencia de otros','Ubicación del personal','Bitácora general']}},
+  bol:{cat:'Boletero',nombre:'Ana Bautista',ini:'AB',zona:'ext',puesto:'Explanada · Taquilla 3',acceso:'Acceso 1er Piso oriente',
+    avisoT:'Validación digital activa',avisoP:'Recuerda validar QR y físico. Reporta intentos de duplicado.',
+    tareas:['Validar accesos (físico y digital)','Orientar al público al acceso','Reportar boletos irregulares'],
+    indic:['Verifica vigencia y zona del boleto.','Canaliza dudas de reventa al supervisor.','Mantén fila ordenada en tu punto.'],
+    repTipos:['Boleto irregular','Intento de duplicado','Fila excedida'],
+    reportes:[{t:'Boleto duplicado detectado',h:'19:47',e:'Enviado'}],
+    perms:{ver:['Mi asistencia','Mi punto de validación','Mis reportes'],hacer:['Registrar mi asistencia','Reportar boletos irregulares'],no:['Asistencia de otros','Ubicación del personal','Aforo total del recinto']}}
+};
+var EMP_CUR='acom';
+var EMP_TAREAS_STATE={};
+
+function buildRoleSwitch(){
+  var keys=Object.keys(EMP_ROLES),h='';
+  keys.forEach(function(k){h+='<button class="'+(EMP_CUR===k?'on':'')+'" onclick="setEmpRole(\''+k+'\')">'+EMP_ROLES[k].cat+'</button>';});
+  document.getElementById('roleSwitch').innerHTML=h;
+}
+function setEmpRole(k){EMP_CUR=k;EMP_TAREAS_STATE={};buildRoleSwitch();renderEmp();}
+function renderEmp(){
+  var r=EMP_ROLES[EMP_CUR];
+  document.getElementById('empPhoto').textContent=r.ini;
+  document.getElementById('empCat').textContent=r.cat;
+  document.getElementById('empName').textContent=r.nombre;
+  document.getElementById('empPuesto').textContent=r.puesto;
+  document.getElementById('empAcceso').textContent=r.acceso;
+  document.getElementById('empAvisoT').textContent=r.avisoT;
+  document.getElementById('empAvisoP').textContent=r.avisoP;
+  document.getElementById('empFirst').textContent=r.nombre.split(' ')[0];
+  document.getElementById('empPuestoTag').textContent='📍 '+r.puesto;
+  document.getElementById('perfilPhoto').textContent=r.ini;
+  document.getElementById('perfilName').textContent=r.nombre;
+  document.getElementById('perfilCat').textContent=r.cat+' · Turno vespertino';
+  // tareas
+  var ht='';r.tareas.forEach(function(t,i){var done=EMP_TAREAS_STATE[i];ht+='<div class="task '+(done?'done':'')+'" onclick="toggleTarea('+i+')"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></span><span>'+t+'</span></div>';});
+  document.getElementById('empTareas').innerHTML=ht;
+  // historial (solo propio)
+  var hist=[['Hoy','18:30','Huella','A tiempo','ok'],['Ayer','18:28','Rostro','A tiempo','ok'],['22 jun','18:41','Huella','Retardo','warn'],['21 jun','18:25','Rostro','A tiempo','ok']];
+  var hh='';hist.forEach(function(d){hh+='<div class="row"><div class="av" style="background:var(--terciopelo-2)">'+d[0].slice(0,2)+'</div><div class="main"><b>'+d[0]+' · '+d[1]+'</b><p>'+d[2]+'</p></div><div class="tag '+d[4]+'">'+d[3]+'</div></div>';});
+  document.getElementById('empHist').innerHTML=hh;
+  // indicaciones
+  var hi='';r.indic.forEach(function(x){hi+='<div class="row"><div class="av" style="background:var(--ambar-suave);color:var(--oro)">›</div><div class="main"><b style="font-weight:600;font-size:13px">'+x+'</b></div></div>';});
+  document.getElementById('empIndic').innerHTML=hi;
+  // reportar tipos
+  var hc='';r.repTipos.forEach(function(t,i){hc+='<div class="chip '+(i===0?'on':'')+'" onclick="selRep(this)">'+t+'</div>';});
+  document.getElementById('empRepTipos').innerHTML=hc;
+  // mis reportes
+  var hr='';r.reportes.forEach(function(x){hr+='<div class="row"><div class="av" style="background:var(--carmesi-suave);color:var(--carmesi)">!</div><div class="main"><b style="font-weight:600;font-size:13px">'+x.t+'</b><p>'+x.h+'</p></div><div class="tag '+(x.e==='Atendido'||x.e==='Cerrado'?'ok':'info')+'">'+x.e+'</div></div>';});
+  document.getElementById('empReportes').innerHTML=hr;
+  // perfil datos
+  document.getElementById('perfilDatos').innerHTML=
+    '<div><div class="l">Categoría</div><div class="v">'+r.cat+'</div></div>'+
+    '<div><div class="l">ID operativo</div><div class="v">'+r.ini+'-'+(1000+EMP_CUR.length*137)+'</div></div>'+
+    '<div><div class="l">Puesto</div><div class="v" style="font-size:12px">'+r.puesto+'</div></div>'+
+    '<div><div class="l">Supervisor</div><div class="v" style="font-size:12px">L. Treviño</div></div>';
+  // permisos
+  var hp='';
+  r.perms.ver.forEach(function(x){hp+='<div class="perm yes"><span class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></span>Ver: '+x+'</div>';});
+  r.perms.hacer.forEach(function(x){hp+='<div class="perm yes"><span class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></span>'+x+'</div>';});
+  r.perms.no.forEach(function(x){hp+='<div class="perm no"><span class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 6 6 18M6 6l12 12"/></svg></span>No: '+x+'</div>';});
+  document.getElementById('empPerms').innerHTML=hp;
+  buildEmpMapa();
+}
+function toggleTarea(i){EMP_TAREAS_STATE[i]=!EMP_TAREAS_STATE[i];renderEmp();}
+function selRep(el){el.parentNode.querySelectorAll('.chip').forEach(function(c){c.classList.remove('on');});el.classList.add('on');}
+function empEnviarReporte(){var t=document.getElementById('empRepText');alert('Reporte enviado a tu supervisor con tu puesto: '+EMP_ROLES[EMP_CUR].puesto);t.value='';}
+function empPanic(){alert('⚠ Apoyo solicitado. Tu supervisor y el Puesto de Mando reciben tu ubicación: '+EMP_ROLES[EMP_CUR].puesto);}
+function buildEmpMapa(){
+  var r=EMP_ROLES[EMP_CUR];var zid=r.zona;
+  var s='<defs><radialGradient id="stg2" cx="50%" cy="100%" r="90%"><stop offset="0%" stop-color="#F2C879"/><stop offset="100%" stop-color="#E0A23B"/></radialGradient></defs>';
+  s+='<rect x="44" y="40" width="352" height="520" rx="6" fill="none" stroke="#5a4f60" stroke-width="1" stroke-dasharray="4 4"/>';
+  s+='<text x="220" y="20" fill="#7C6F82" font-size="10" text-anchor="middle" letter-spacing="3">REFORMA</text>';
+  s+='<rect x="70" y="66" width="300" height="92" rx="8" fill="#241a2a" stroke="#5a4f60"/><text x="220" y="84" fill="#7C6F82" font-size="9" text-anchor="middle" letter-spacing="1">EXPLANADA</text>';
+  s+='<rect x="80" y="94" width="54" height="22" rx="3" fill="#2c2032" stroke="#5a4f60"/><text x="107" y="108" fill="#7C6F82" font-size="7" text-anchor="middle">TAQUILLA</text>';
+  ZONAS.forEach(function(z){var hi=z.id===zid;var col=hi?'#E0A23B':'#4a414f';
+    s+='<path d="'+arc(z.r0,z.r1,A0,A1)+'" fill="'+col+'" fill-opacity="'+(hi?0.34:0.08)+'" stroke="'+col+'" stroke-width="'+(hi?2:1)+'"/>';
+    var mp=polar((z.r0+z.r1)/2,270);s+='<text x="'+mp[0].toFixed(0)+'" y="'+mp[1].toFixed(0)+'" fill="'+(hi?'#F4EFE9':'#5a4f60')+'" font-size="8" text-anchor="middle" font-weight="bold">'+z.nombre.toUpperCase()+'</text>';});
+  s+='<rect x="184" y="500" width="72" height="34" rx="4" fill="url(#stg2)" stroke="#F2C879"/><text x="220" y="521" fill="#1a120a" font-size="10" text-anchor="middle" font-weight="bold">FORO</text>';
+  // marcador "tú"
+  var mk;
+  if(zid==='ext'){mk=[107,105];} else {var zz=ZONAS.find(function(x){return x.id===zid;});mk=polar((zz.r0+zz.r1)/2,252);}
+  s+='<circle cx="'+mk[0]+'" cy="'+mk[1]+'" r="11" fill="#CE4A44" fill-opacity="0.25"><animate attributeName="r" values="9;16;9" dur="1.8s" repeatCount="indefinite"/></circle>';
+  s+='<circle cx="'+mk[0]+'" cy="'+mk[1]+'" r="5" fill="#CE4A44" stroke="#fff" stroke-width="1.5"/>';
+  s+='<text x="'+mk[0]+'" y="'+(mk[1]-16)+'" fill="#F4EFE9" font-size="8" text-anchor="middle" font-weight="bold">TÚ</text>';
+  document.getElementById('empMapa').innerHTML=svgWrap(s);
+}
+function empTab(t){['turno','asistencia','puesto','reportar','perfil'].forEach(function(s){var sc=document.getElementById('e-'+s);if(sc)sc.classList.toggle('on',s===t);var tb=document.getElementById('etab-'+s);if(tb)tb.classList.toggle('on',s===t);});scrollPhoneTop();}
+function scrollPhoneTop(){var ph=document.querySelector('.phone');if(!ph)return;var top=ph.getBoundingClientRect().top+window.pageYOffset-70;window.scrollTo({top:Math.max(0,top),behavior:'smooth'});}
+
+/* ===== INIT ===== */
+genPersonal();
+buildZonas('mapaApp');
+buildZonas('mapaWeb');
+renderAt('casos');
+renderCheckins();
+renderRosterApp();
+renderRosterWeb();
+fillWeb();
+buildLive('mapaLiveWeb');
+buildLiveChips('liveChipsApp');
+buildLiveChips('liveChipsWeb');
+updateLiveDetail();
+animateLive();
+buildRoleSwitch();
+renderEmp();
+renderEventos();
+</script>
+</body>
+</html>
